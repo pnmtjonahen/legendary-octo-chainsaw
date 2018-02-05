@@ -11,6 +11,7 @@ import lombok.Getter;
 @Builder        
 public class Drink {
 
+    private final String ref;
     private final String name;
     private final String description;
     private final Long price;

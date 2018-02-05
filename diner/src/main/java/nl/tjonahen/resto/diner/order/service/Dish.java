@@ -1,4 +1,4 @@
-package nl.tjonahen.resto.diner.menu;
+package nl.tjonahen.resto.diner.order.service;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ import lombok.Getter;
  * @author Philippe Tjon - A - Hen
  */
 @Getter
-class Dish {
+public class Dish {
     private String name;
     private String description;
     private Long price;
