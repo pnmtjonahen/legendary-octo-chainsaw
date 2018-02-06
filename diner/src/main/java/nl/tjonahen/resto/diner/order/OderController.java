@@ -2,6 +2,7 @@ package nl.tjonahen.resto.diner.order;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
@@ -22,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  * @author Philippe Tjon - A - Hen
  */
+@Slf4j
 @RestController
 @RequestMapping("api/order")
 public class OderController {
@@ -53,6 +55,21 @@ public class OderController {
 
     }
 
+    @PostMapping("/{id}/drinks")
+    public void serveDrinks(@PathVariable Long id) {
+        log.info("Drinks can be served for order {}", id);
+    }
+
+    @PostMapping("/{id}/dishes")
+    public void serveDishes(@PathVariable Long id) {
+        log.info("Food can be served for order {}", id);
+    }
+
+    @PostMapping("/{id}/pay")
+    public void servePayOrder(@PathVariable Long id) {
+        log.info("Order {} is payed", id);
+    }
+
     @PostMapping
     public ResponseEntity placeOrder(@RequestBody final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {
@@ -73,7 +90,7 @@ public class OderController {
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DISH)
                 .collect(Collectors.toList()));
-        
+
         orderService.processDrinks(order.getId(), order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DRINK)

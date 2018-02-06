@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableRabbit
@@ -24,6 +25,10 @@ public class KitchenApplication  implements RabbitListenerConfigurer {
         SpringApplication.run(KitchenApplication.class, args);
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
 
     @Bean
