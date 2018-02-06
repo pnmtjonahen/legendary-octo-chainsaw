@@ -2,7 +2,6 @@ package nl.tjonahen.resto.diner.order;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.ws.rs.PathParam;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
@@ -55,7 +54,7 @@ public class OderController {
     }
 
     @PostMapping
-    public ResponseEntity placeOrder(@RequestBody final List<Item> orderItems,
+    public ResponseEntity placeOrder(@RequestBody final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {
 
         final Order order = Order.builder()
@@ -64,17 +63,18 @@ public class OderController {
                         .map(item -> OrderItem.builder()
                         .ref(item.getRef())
                         .quantity(item.getQuantity())
-                        .orderItemType(item.getType() == ItemType.DISH ? OrderItemType.DISH : OrderItemType.DRINK)
+                        .orderItemType(item.getType() == RequestedItemType.DISH ? OrderItemType.DISH : OrderItemType.DRINK)
                         .build())
                         .collect(Collectors.toList()))
                 .build();
         orderRepository.save(order);
 
-        orderService.processDishes(order.getOrderItems()
+        orderService.processDishes(order.getId(), order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DISH)
                 .collect(Collectors.toList()));
-        orderService.processDishes(order.getOrderItems()
+        
+        orderService.processDrinks(order.getId(), order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DRINK)
                 .collect(Collectors.toList()));

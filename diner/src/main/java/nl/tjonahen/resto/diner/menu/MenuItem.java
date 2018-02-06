@@ -1,6 +1,5 @@
 package nl.tjonahen.resto.diner.menu;
 
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,8 +9,8 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class Menu {
-
-    private final List<MenuItem> dishes;
-    private final List<MenuItem> drinks;
+public class MenuItem {
+    private final String name;
+    private final String description;
+    private final Long price;
 }
