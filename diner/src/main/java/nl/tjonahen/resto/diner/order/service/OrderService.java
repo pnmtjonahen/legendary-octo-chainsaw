@@ -8,6 +8,9 @@ import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -54,11 +57,17 @@ public class OrderService {
     }
 
     public List<Dish> getDishes() {
-        return restTemplate.getForObject(dishesUrl, List.class);
+        ResponseEntity<List<Dish>> getResponse
+                = restTemplate.exchange(dishesUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
+                });
+        return getResponse.getBody();
     }
 
     public List<Drink> getDrinks() {
-        return restTemplate.getForObject(drinksUrl, List.class);
+        ResponseEntity<List<Drink>> getResponse
+                = restTemplate.exchange(drinksUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Drink>>() {
+                });
+        return getResponse.getBody();
     }
 
     public Long getPrice(OrderItem item) {
