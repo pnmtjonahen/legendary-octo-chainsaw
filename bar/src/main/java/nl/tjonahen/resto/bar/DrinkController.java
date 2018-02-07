@@ -1,5 +1,6 @@
 package nl.tjonahen.resto.bar;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ public class DrinkController {
     
     
     @GetMapping
+    @JsonView(PublicView.class)
     public List<Drink> getAllDrinks() {
         return barService.getAllDrinks();
     }

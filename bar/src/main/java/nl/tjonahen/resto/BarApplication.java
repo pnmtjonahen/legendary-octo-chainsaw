@@ -22,21 +22,29 @@ public class BarApplication implements RabbitListenerConfigurer {
     public static final String BAR_EXCHANGE = "bar-exchange";
     public static final String BAR_KEY = "bar-key";
 
-
     public static void main(String[] args) {
         SpringApplication.run(BarApplication.class, args);
+    }
+
+    @Bean
+    public Queue queue() {
+        return new Queue(BAR_QUEUE, false);
+    }
+
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange(BAR_EXCHANGE);
     }
 
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    
-    @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(new Queue(BAR_QUEUE, false)).to(new TopicExchange(BAR_EXCHANGE)).with(BAR_KEY);
-    }
 
+    @Bean
+    public Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(BAR_KEY);
+    }
 
     private DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();

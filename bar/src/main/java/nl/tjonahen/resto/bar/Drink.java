@@ -1,24 +1,26 @@
 package nl.tjonahen.resto.bar;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  *
  * @author Philippe Tjon - A - Hen
  */
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder        
+@Builder
 public class Drink {
 
-    private String ref;
-    private String name;
-    private String description;
-    private Long price;
+    @JsonView(PublicView.class)
+    private final String ref;
+    @JsonView(PublicView.class)
+    private final String name;
+    @JsonView(PublicView.class)
+    private final String description;
+    @JsonView(PublicView.class)
+    private final Long price;
+
+    private final Long preparationTime;
+
 }

@@ -25,6 +25,17 @@ public class KitchenApplication  implements RabbitListenerConfigurer {
         SpringApplication.run(KitchenApplication.class, args);
     }
 
+
+    @Bean
+    public Queue queue() {
+        return new Queue(KITCHEN_QUEUE, false);
+    }
+
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange(KITCHEN_EXCHANGE);
+    }
+    
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -32,8 +43,8 @@ public class KitchenApplication  implements RabbitListenerConfigurer {
 
 
     @Bean
-    public Binding binding() {
-        return BindingBuilder.bind(new Queue(KITCHEN_QUEUE, false)).to(new TopicExchange(KITCHEN_EXCHANGE)).with(KITCHEN_KEY);
+    public Binding binding(Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(KITCHEN_KEY);
     }
     private DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
