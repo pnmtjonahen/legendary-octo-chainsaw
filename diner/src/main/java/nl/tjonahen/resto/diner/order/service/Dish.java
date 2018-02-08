@@ -8,6 +8,7 @@ import lombok.Getter;
  */
 @Getter
 public class Dish {
+    private String ref;
     private String name;
     private String description;
     private Long price;

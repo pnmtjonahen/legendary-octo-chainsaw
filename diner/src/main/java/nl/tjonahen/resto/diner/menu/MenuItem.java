@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MenuItem {
+    private final String ref;
     private final String name;
     private final String description;
     private final Long price;

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <title>DINER</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/w3.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <style>
+        body,h1,h5 {font-family: "Raleway", sans-serif}
+        body, html {height: 100%}
+        .bgimg {
+            background-image: url('w3images/onepage_restaurant.jpg');
+            min-height: 100%;
+            background-position: center;
+            background-size: cover;
+        }
+    </style>
+    <body>
+
+        <div class="bgimg w3-display-container w3-text-white">
+            <div class="w3-display-middle w3-jumbo">
+                <p>Food! Drinks!</p>
+            </div>
+            <div class="w3-display-topleft w3-container w3-xlarge">
+                <p><button onclick="document.getElementById('food').style.display = 'block'" class="w3-button w3-black">food</button></p>
+                <p><button onclick="document.getElementById('drink').style.display = 'block'" class="w3-button w3-black">beverages</button></p>
+                <p><button onclick="view.openBasket();" class="w3-button w3-black">order</button></p>
+            </div>
+            <div class="w3-display-bottomleft w3-container">
+                <p class="w3-xlarge">monday - friday 10-23 | saturday 14-02</p>
+                <p class="w3-large">Gammelkaia, Longyearbyen</p>
+                <p>powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+            </div>
+        </div>
+
+        <!-- Menu Modal -->
+        <div id="food" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black w3-display-container">
+                    <span onclick="document.getElementById('food').style.display = 'none'" class="w3-button w3-display-topright w3-large">x</span>
+                    <h1>Food</h1>
+                </div>
+                <div class="w3-container" id="Eat">
+                </div>
+            </div>
+        </div>
+        <!-- Menu Modal -->
+        <div id="drink" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black w3-display-container">
+                    <span onclick="document.getElementById('drink').style.display = 'none'" class="w3-button w3-display-topright w3-large">x</span>
+                    <h1>Beverages</h1>
+                </div>
+                <div class="w3-container" id="Drinks">
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Modal -->
+        <div id="order" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black">
+                    <span onclick="document.getElementById('order').style.display = 'none'" class="w3-button w3-display-topright w3-large">x</span>
+                    <h1>Order</h1>
+                </div>
+                <div class="w3-container" id="Basket">
+                    <p><button class="w3-button" type="submit">SEND MESSAGE</button></p>
+                </div>
+            </div>
+        </div>
+
+        <script src="index.js"></script>
+    </body>
+</html>
+
