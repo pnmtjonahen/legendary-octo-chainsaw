@@ -18,3 +18,19 @@
     user-select: none;
     -webkit-user-select: none;
 }
+
+.order-table {
+    width:100%;
+}
+
+.first-cell {
+    width:75%;
+}
+
+.price-cell {
+    text-align: right;
+}
+
+.action-cell {
+    text-align: right;
+}
