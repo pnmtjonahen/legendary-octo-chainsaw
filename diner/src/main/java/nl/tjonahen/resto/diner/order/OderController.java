@@ -9,6 +9,7 @@ import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import nl.tjonahen.resto.diner.order.model.OrderStatus;
 import nl.tjonahen.resto.diner.order.persistence.OrderRepository;
 import nl.tjonahen.resto.diner.order.service.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,7 +74,7 @@ public class OderController {
 
     @CrossOrigin    
     @PostMapping
-    public ResponseEntity placeOrder(@RequestBody final List<RequestedItem> orderItems,
+    public ResponseEntity<ResponseOrder> placeOrder(@RequestBody final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {
 
         final Order order = Order.builder()
@@ -97,8 +98,8 @@ public class OderController {
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DRINK)
                 .collect(Collectors.toList()));
-
-        UriComponents uriComponents = builder.path("/api/order/{id}").buildAndExpand(order.getId());
-        return ResponseEntity.created(uriComponents.toUri()).build();
+        log.info("Accepted order {}", order.getId());
+        UriComponents uriComponents = builder.path("/api/order/{id}/bill").buildAndExpand(order.getId());
+        return new ResponseEntity<>(ResponseOrder.builder().ref(order.getId()).billUrl(uriComponents.toUri().toString()).build(), HttpStatus.ACCEPTED);
     }
 }

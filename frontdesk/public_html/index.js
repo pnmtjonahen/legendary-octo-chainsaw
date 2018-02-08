@@ -7,6 +7,7 @@ class IndexView {
         this.orderContainer = document.querySelector("#Basket");
         this.drinks = [];
         this.dishes = [];
+        this.orderInfo = undefined;
 
     }
 
@@ -170,11 +171,13 @@ class IndexView {
                         method: "POST",
                         body: JSON.stringify(order)
                     })
-                    .then(function (res) {
+                    .then(res => res.json())
+                    .then(res => {
                         console.log(res);
+                        this.orderInfo = res;
                         this.closeCart();
                     })
-                    .catch(function (res) {
+                    .catch(res => {
                         console.log(res);
                     });
 
