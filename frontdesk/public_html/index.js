@@ -1,3 +1,5 @@
+/* global fetch */
+
 class IndexView {
     constructor() {
         this.eatContainer = document.querySelector("#Eat");
@@ -140,9 +142,46 @@ class IndexView {
             table.appendChild(this.appendOrderRow("Total", total, null));
 
             this.orderContainer.appendChild(table);
+            this.orderContainer.appendChild(this.sendOrderButton());
         } else {
             this.orderContainer.appendChild(this.newH5("Cart is empty. Add food or dinks to the card.."));
         }
+    }
+    sendOrderButton() {
+        const p = document.createElement("p");
+        const button = document.createElement("button");
+        button.className = "w3-button";
+        button.type = "submit";
+        button.onclick = (e) => {
+
+            const order = [];
+            this.dishes.forEach((c) => {
+                order.push({"ref": c.d.ref, "quantity": c.count, "type": "DISH"});
+            });
+            this.drinks.forEach((c) => {
+                order.push({"ref": c.d.ref, "quantity": c.count, "type": "DRINK"});
+            });
+            fetch("http://localhost:8080/api/order/",
+                    {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        method: "POST",
+                        body: JSON.stringify(order)
+                    })
+                    .then(function (res) {
+                        console.log(res);
+                        this.closeCart();
+                    })
+                    .catch(function (res) {
+                        console.log(res);
+                    });
+
+        };
+        button.appendChild(document.createTextNode("SEND ORDER"));
+        p.appendChild(button);
+        return p;
     }
 
     appendOrderRow(name, price, c) {
@@ -164,9 +203,12 @@ class IndexView {
         return row;
 
     }
-    openBasket() {
+    openCart() {
         this.fillBasket();
         document.getElementById('order').style.display = 'block';
+    }
+    closeCart() {
+        document.getElementById('order').style.display = 'none';
     }
     clearOrderContainer() {
         while (this.orderContainer.firstChild)

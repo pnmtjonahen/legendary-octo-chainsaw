@@ -10,6 +10,7 @@ import nl.tjonahen.resto.diner.order.model.OrderStatus;
 import nl.tjonahen.resto.diner.order.persistence.OrderRepository;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,6 +71,7 @@ public class OderController {
         log.info("Order {} is payed", id);
     }
 
+    @CrossOrigin    
     @PostMapping
     public ResponseEntity placeOrder(@RequestBody final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {
