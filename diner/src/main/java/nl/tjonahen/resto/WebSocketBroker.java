@@ -28,8 +28,14 @@ public class WebSocketBroker implements WebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession arg0, CloseStatus arg1)
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus arg1)
             throws Exception {
+        sessions.entrySet()
+                .stream()
+                .filter(e -> e.getValue().getId().equals(session.getId()))
+                .map(e -> e.getKey())
+                .findFirst()
+                .ifPresent(id -> sessions.remove(id));
     }
 
     @Override
