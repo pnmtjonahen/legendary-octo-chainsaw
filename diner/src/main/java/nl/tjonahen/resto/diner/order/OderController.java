@@ -48,7 +48,8 @@ public class OderController {
     }
 
     @GetMapping("/{id}/bill")
-    public Bill getAllOrders(@PathVariable Long id) {
+    @CrossOrigin
+    public Bill getOrderBill(@PathVariable Long id) {
         Order order = orderRepository.getOne(id);
         List<BillItem> billItems = order.getOrderItems()
                 .stream()
@@ -64,21 +65,28 @@ public class OderController {
     @PostMapping("/{id}/drinks")
     public void serveDrinks(@PathVariable Long id) throws IOException {
         log.info("Drinks can be served for order {}", id);
-        webSocketBroker.sendStatus(id, "Drinks are served...");
+        final Order order = orderRepository.getOne(id);
+        webSocketBroker.sendStatus(id, order.serveDrinks().name());
+        orderRepository.save(order);
     }
+
 
     @PostMapping("/{id}/dishes")
     public void serveDishes(@PathVariable Long id) throws IOException {
         log.info("Food can be served for order {}", id);
-        webSocketBroker.sendStatus(id, "Diner is served...");
+        final Order order = orderRepository.getOne(id);
+        webSocketBroker.sendStatus(id, order.serveFood().name());
+        orderRepository.save(order);
     }
 
+
     @PostMapping("/{id}/pay")
+    @CrossOrigin
     public void servePayOrder(@PathVariable Long id) {
         log.info("Order {} is payed", id);
     }
 
-    @CrossOrigin    
+    @CrossOrigin
     @PostMapping
     public ResponseEntity<ResponseOrder> placeOrder(@RequestBody final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {

@@ -38,6 +38,9 @@ public class OrderService {
 
     @Async
     public void processDrinks(Long orderid, List<OrderItem> drinks) {
+        if (drinks.isEmpty()) {
+            return;
+        }
         log.info("Sending ordered drinks to the bar......");
         rabbitTemplate.convertAndSend(DinerApplication.BAR_EXCHANGE, DinerApplication.BAR_KEY,
                 RequestedMessage.builder()
@@ -48,6 +51,9 @@ public class OrderService {
 
     @Async
     public void processDishes(Long orderid, List<OrderItem> dishes) {
+        if (dishes.isEmpty()) {
+            return;
+        }
         log.info("Sending ordered dishes to the kitchen......");
         rabbitTemplate.convertAndSend(DinerApplication.KITCHEN_EXCHANGE, DinerApplication.KITCHEN_KEY,
                 RequestedMessage.builder()
@@ -84,5 +90,6 @@ public class OrderService {
         return restTemplate.getForObject(drinksUrl + "/" + item.getRef(), Dish.class).getName();
 
     }
+    
 
 }

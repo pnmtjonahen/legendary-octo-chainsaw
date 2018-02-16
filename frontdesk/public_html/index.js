@@ -1,17 +1,13 @@
 /* global fetch */
 
 class OrderWebSocket {
-    constructor() {
+    constructor(onmesg) {
         this.ws = new WebSocket("ws://localhost:8080/test");
         this.ws.onopen = () => {
             console.log("Connection is open...");
         };
 
-        this.ws.onmessage = (evt) => {
-            var received_msg = evt.data;
-            this.eatContainer = document.querySelector("#Status");
-            this.eatContainer.appendChild(document.createTextNode(received_msg));
-        };
+        this.ws.onmessage = onmesg;
 
         this.ws.onclose = () => {
             // websocket is closed.
@@ -28,13 +24,38 @@ class IndexView {
         this.eatContainer = document.querySelector("#Eat");
         this.drinksContainer = document.querySelector("#Drinks");
         this.orderContainer = document.querySelector("#Basket");
+        this.statusContainer = document.querySelector("#Status");
         this.drinks = [];
         this.dishes = [];
         this.orderInfo = undefined;
     }
 
     init() {
-        this.ws = new OrderWebSocket();
+        this.ws = new OrderWebSocket((evt) => {
+            switch (evt.data) {
+                case "BILLING":
+                    this.clearStatusContainer();
+                    fetch("http://localhost:8080/api/order/" + this.orderInfo.ref + "/bill").then(res => res.json()).then(bill => {
+                        const table = document.createElement("table");
+                        table.className = "order-table";
+                        bill.items.forEach((c) => {
+                            table.appendChild(this.appendBillRow(c.name, c.quantity, c.price * c.quantity));
+                        });
+                        table.appendChild(this.appendBillRow("Total", null, bill.total));
+
+                        this.statusContainer.appendChild(table);
+                        this.statusContainer.appendChild(this.payBillButton());
+
+                    });
+                    break;
+                case "DRINK_SERVED":
+                    this.statusContainer.appendChild(this.newH5("Drinks are served.."));
+                    break;
+                case "FOOD_SERVED":
+                    this.statusContainer.appendChild(this.newH5("Food is served.."));
+                    break;
+            }
+        });
         fetch("http://localhost:8080/api/menu").then(res => res.json()).then(menu => {
             menu.dishes.forEach((d) => {
                 this.eatContainer.appendChild(this.newH5(d.name));
@@ -49,6 +70,61 @@ class IndexView {
             });
         }
         );
+
+    }
+
+    clearStatusContainer() {
+        while (this.statusContainer.firstChild)
+            this.statusContainer.removeChild(this.statusContainer.firstChild);
+    }
+    appendBillRow(name, count, price) {
+        const row = document.createElement("tr");
+        var cell = document.createElement("td");
+        cell.className = "first-cell";
+        cell.appendChild(this.newH5(name));
+        row.appendChild(cell);
+        cell = document.createElement("td");
+        cell.className = "second-cell";
+        if (count) {
+            cell.appendChild(this.newH5(count));
+        }
+        row.appendChild(cell);
+        cell = document.createElement("td");
+        cell.className = "third-cell";
+        cell.appendChild(this.newH5(this.markupPrice("" + price)));
+        row.appendChild(cell);
+        return row;
+
+    }
+
+    payBillButton() {
+        const p = document.createElement("p");
+        const button = document.createElement("button");
+        button.className = "w3-button";
+        button.type = "submit";
+        button.onclick = (e) => {
+
+            fetch("http://localhost:8080/api/order/" + this.orderInfo.ref + "/pay",
+                    {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        method: "POST"
+                    })
+                    .then(res => {
+                        document.getElementById('orderstatus').style.display = 'none';
+                        this.clearStatusContainer();
+                    })
+                    .catch(res => {
+                        console.log(res);
+                    });
+
+        };
+        button.appendChild(document.createTextNode("PAY BILL"));
+        p.appendChild(button);
+        return p;
+
 
     }
 
@@ -197,7 +273,11 @@ class IndexView {
                         console.log(orderinfo);
                         this.orderInfo = orderinfo;
                         this.closeCart();
+                        this.dishes = [];
+                        this.drinks = [];
                         document.getElementById('orderstatus').style.display = 'block';
+                        this.clearStatusContainer();
+                        this.statusContainer.appendChild(this.newSpinner());
                         this.ws.sendOrderId(orderinfo.ref);
                     })
                     .catch(res => {
@@ -209,6 +289,12 @@ class IndexView {
         p.appendChild(button);
         return p;
     }
+    
+    newSpinner() {
+        const p = document.createElement("div");
+        p.className = "loader";
+        return p;
+    }
 
     appendOrderRow(name, price, c) {
         const row = document.createElement("tr");
@@ -217,11 +303,11 @@ class IndexView {
         cell.appendChild(this.newH5(name));
         row.appendChild(cell);
         cell = document.createElement("td");
-        cell.className = "price-cell";
+        cell.className = "second-cell";
         cell.appendChild(this.newH5(this.markupPrice("" + price)));
         row.appendChild(cell);
         cell = document.createElement("td");
-        cell.className = "action-cell";
+        cell.className = "third-cell";
         if (c) {
             cell.appendChild(c);
         }
@@ -239,7 +325,6 @@ class IndexView {
     clearOrderContainer() {
         while (this.orderContainer.firstChild)
             this.orderContainer.removeChild(this.orderContainer.firstChild);
-
     }
 
 }

@@ -7,7 +7,9 @@ package nl.tjonahen.resto.diner.order.model;
 public enum OrderStatus {
     INITIAL,
     PREPARING,
-    SERVED,
+    DRINK_SERVED,
+    FOOD_SERVED,
+    BILLING,
     PAYED;
     
 }
