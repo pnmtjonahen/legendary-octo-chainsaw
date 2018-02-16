@@ -1,5 +1,28 @@
 /* global fetch */
 
+class OrderWebSocket {
+    constructor() {
+        this.ws = new WebSocket("ws://localhost:8080/test");
+        this.ws.onopen = () => {
+            console.log("Connection is open...");
+        };
+
+        this.ws.onmessage = (evt) => {
+            var received_msg = evt.data;
+            this.eatContainer = document.querySelector("#Status");
+            this.eatContainer.appendChild(document.createTextNode(received_msg));
+        };
+
+        this.ws.onclose = () => {
+            // websocket is closed.
+            console.log("Connection is closed...");
+        };
+    }
+    sendOrderId(id) {
+        this.ws.send(JSON.stringify({'orderid': id}));
+    }
+}
+
 class IndexView {
     constructor() {
         this.eatContainer = document.querySelector("#Eat");
@@ -8,10 +31,10 @@ class IndexView {
         this.drinks = [];
         this.dishes = [];
         this.orderInfo = undefined;
-
     }
 
-    goHome() {
+    init() {
+        this.ws = new OrderWebSocket();
         fetch("http://localhost:8080/api/menu").then(res => res.json()).then(menu => {
             menu.dishes.forEach((d) => {
                 this.eatContainer.appendChild(this.newH5(d.name));
@@ -63,7 +86,7 @@ class IndexView {
             }
         };
         const it = document.createElement("i");
-        it.className = "w3-xxlarge fa fa-cart-plus";
+        it.className = "w3-button w3-xxlarge fa fa-cart-plus";
         a.appendChild(it);
         return a;
     }
@@ -83,7 +106,7 @@ class IndexView {
             }
         };
         const it = document.createElement("i");
-        it.className = "w3-xxlarge fa fa-cart-plus";
+        it.className = "w3-button w3-xxlarge fa fa-cart-plus";
         a.appendChild(it);
         return a;
     }
@@ -91,7 +114,6 @@ class IndexView {
 
         const a = document.createElement("a");
         a.onclick = (e) => {
-            console.log("Remove from to food basket ref: " + c.d.ref + " " + c.d.name);
             c.count--;
             if (c.count <= 0) {
                 this.dishes = this.dishes.filter(cc => {
@@ -102,7 +124,7 @@ class IndexView {
         };
         a.appendChild(document.createTextNode(c.count + " : "));
         const it = document.createElement("i");
-        it.className = "w3-xxlarge fa fa-trash";
+        it.className = "w3-button w3-xxlarge fa fa-trash";
         a.appendChild(it);
         return a;
     }
@@ -110,7 +132,6 @@ class IndexView {
 
         const a = document.createElement("a");
         a.onclick = (e) => {
-            console.log("Remove from to drink basket ref: " + c.d.ref + " " + c.d.name);
             c.count--;
             if (c.count <= 0) {
                 this.drinks = this.drinks.filter(cc => {
@@ -121,7 +142,7 @@ class IndexView {
         };
         a.appendChild(document.createTextNode(c.count + " : "));
         const it = document.createElement("i");
-        it.className = "w3-xxlarge fa fa-trash";
+        it.className = "w3-button w3-xxlarge fa fa-trash";
         a.appendChild(it);
         return a;
     }
@@ -171,11 +192,13 @@ class IndexView {
                         method: "POST",
                         body: JSON.stringify(order)
                     })
-                    .then(res => res.json())
-                    .then(res => {
-                        console.log(res);
-                        this.orderInfo = res;
+                    .then(orderinfo => orderinfo.json())
+                    .then(orderinfo => {
+                        console.log(orderinfo);
+                        this.orderInfo = orderinfo;
                         this.closeCart();
+                        document.getElementById('orderstatus').style.display = 'block';
+                        this.ws.sendOrderId(orderinfo.ref);
                     })
                     .catch(res => {
                         console.log(res);
@@ -222,7 +245,7 @@ class IndexView {
 }
 
 const view = new IndexView();
-view.goHome();
+view.init();
 
 
 

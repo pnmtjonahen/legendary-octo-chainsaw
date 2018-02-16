@@ -1,8 +1,10 @@
 package nl.tjonahen.resto.diner.order;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import nl.tjonahen.resto.WebSocketBroker;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
@@ -32,10 +34,12 @@ public class OderController {
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final WebSocketBroker webSocketBroker;
 
-    public OderController(OrderRepository orderRepository, OrderService orderService) {
+    public OderController(OrderRepository orderRepository, OrderService orderService, WebSocketBroker webSocketBroker) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
+        this.webSocketBroker = webSocketBroker;
     }
 
     @GetMapping
@@ -58,13 +62,15 @@ public class OderController {
     }
 
     @PostMapping("/{id}/drinks")
-    public void serveDrinks(@PathVariable Long id) {
+    public void serveDrinks(@PathVariable Long id) throws IOException {
         log.info("Drinks can be served for order {}", id);
+        webSocketBroker.sendStatus(id, "Drinks are served...");
     }
 
     @PostMapping("/{id}/dishes")
-    public void serveDishes(@PathVariable Long id) {
+    public void serveDishes(@PathVariable Long id) throws IOException {
         log.info("Food can be served for order {}", id);
+        webSocketBroker.sendStatus(id, "Diner is served...");
     }
 
     @PostMapping("/{id}/pay")
