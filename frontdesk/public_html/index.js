@@ -28,11 +28,16 @@ class IndexView {
         this.drinks = [];
         this.dishes = [];
         this.orderInfo = undefined;
+        this.served = false;
     }
 
     init() {
         this.ws = new OrderWebSocket((evt) => {
-            switch (evt.data) {
+            var status = evt.data;
+            if (this.served) {
+                status = "BILLING";
+            }
+            switch (status) {
                 case "BILLING":
                     this.clearStatusContainer();
                     fetch("http://localhost:8080/api/order/" + this.orderInfo.ref + "/bill").then(res => res.json()).then(bill => {
@@ -49,9 +54,11 @@ class IndexView {
                     });
                     break;
                 case "DRINK_SERVED":
+                    this.served = true;
                     this.statusContainer.appendChild(this.newH5("Drinks are served.."));
                     break;
                 case "FOOD_SERVED":
+                    this.served = true;
                     this.statusContainer.appendChild(this.newH5("Food is served.."));
                     break;
             }
@@ -162,7 +169,7 @@ class IndexView {
             }
         };
         const it = document.createElement("i");
-        it.className = "w3-button w3-xxlarge fa fa-cart-plus";
+        it.className = "w3-ripple w3-xxlarge fa fa-cart-plus";
         a.appendChild(it);
         return a;
     }
@@ -182,7 +189,7 @@ class IndexView {
             }
         };
         const it = document.createElement("i");
-        it.className = "w3-button w3-xxlarge fa fa-cart-plus";
+        it.className = "w3-ripple w3-xxlarge fa fa-cart-plus";
         a.appendChild(it);
         return a;
     }
@@ -200,7 +207,7 @@ class IndexView {
         };
         a.appendChild(document.createTextNode(c.count + " : "));
         const it = document.createElement("i");
-        it.className = "w3-button w3-xxlarge fa fa-trash";
+        it.className = "w3-ripple w3-xxlarge fa fa-trash";
         a.appendChild(it);
         return a;
     }
@@ -218,7 +225,7 @@ class IndexView {
         };
         a.appendChild(document.createTextNode(c.count + " : "));
         const it = document.createElement("i");
-        it.className = "w3-button w3-xxlarge fa fa-trash";
+        it.className = "w3-ripple w3-xxlarge fa fa-trash";
         a.appendChild(it);
         return a;
     }

@@ -7,6 +7,7 @@ import java.util.TreeMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -14,6 +15,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 @Slf4j
+@Component
 public class WebSocketBroker implements WebSocketHandler {
 
     private final Map<Long, WebSocketSession> sessions = new TreeMap<>();

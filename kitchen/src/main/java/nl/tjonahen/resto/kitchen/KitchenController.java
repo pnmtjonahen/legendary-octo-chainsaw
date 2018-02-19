@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("/api/dish")
-public class DishController {
+@RequestMapping("/api/kitchen")
+public class KitchenController {
 
     private final KitchenService kitchenService;
 
-    public DishController(KitchenService kitchenService) {
+    public KitchenController(KitchenService kitchenService) {
         this.kitchenService = kitchenService;
     }
     

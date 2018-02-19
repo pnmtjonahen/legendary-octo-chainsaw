@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("/api/drink")
-public class DrinkController {
+@RequestMapping("/api/bar")
+public class BarController {
     
     private final BarService barService;
 
-    public DrinkController(BarService barService) {
+    public BarController(BarService barService) {
         this.barService = barService;
     }
     
