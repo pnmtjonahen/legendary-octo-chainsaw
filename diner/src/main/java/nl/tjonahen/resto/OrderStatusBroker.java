@@ -16,13 +16,12 @@ import org.springframework.web.socket.WebSocketSession;
 
 @Slf4j
 @Component
-public class WebSocketBroker implements WebSocketHandler {
+public class OrderStatusBroker implements WebSocketHandler {
 
     private final Map<Long, WebSocketSession> sessions = new TreeMap<>();
 
     @Override
-    public void handleMessage(WebSocketSession session,
-            WebSocketMessage<?> encodedMessage) throws Exception {
+    public void handleMessage(WebSocketSession session, WebSocketMessage<?> encodedMessage) throws Exception {
         OrderId value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderId.class);
         final Long orderid = Long.valueOf(value.getOrderid());
         sessions.put(orderid, session);
@@ -30,8 +29,7 @@ public class WebSocketBroker implements WebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus arg1)
-            throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         sessions.entrySet()
                 .stream()
                 .filter(e -> e.getValue().getId().equals(session.getId()))
@@ -41,14 +39,12 @@ public class WebSocketBroker implements WebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession arg0)
-            throws Exception {
-        log.info("afterConnectionEstablish {}", arg0.getId());
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        log.info("afterConnectionEstablish {}", session.getId());
     }
 
     @Override
-    public void handleTransportError(WebSocketSession arg0, Throwable arg1)
-            throws Exception {
+    public void handleTransportError(WebSocketSession session, Throwable th) throws Exception {
     }
 
     @Override
@@ -68,5 +64,6 @@ public class WebSocketBroker implements WebSocketHandler {
 @Getter
 @Setter
 class OrderId {
+
     private String orderid;
 }

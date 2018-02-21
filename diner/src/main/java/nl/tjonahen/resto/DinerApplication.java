@@ -56,29 +56,27 @@ public class DinerApplication implements WebSocketConfigurer {
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         return rabbitTemplate;
     }
 
-    
-    public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
     @Autowired
-    private WebSocketBroker webSocketBroker;
+    private OrderStatusBroker orderStatusBroker;
+
+    
     
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(handler(webSocketBroker), "/test").setAllowedOrigins("*");
+        registry.addHandler(handler(orderStatusBroker), "/orderstatus").setAllowedOrigins("*");
     }
 
     @Bean
-    public WebSocketHandler handler(WebSocketBroker webSocketBroker) {
-        return new ExceptionWebSocketHandlerDecorator(webSocketBroker);
+    public WebSocketHandler handler(OrderStatusBroker orderStatusBroker) {
+        return new ExceptionWebSocketHandlerDecorator(orderStatusBroker);
     }
     
     @Bean
-    public WebSocketBroker webSocketBroker() {
-        return new WebSocketBroker();
+    public OrderStatusBroker orderStatusBroker() {
+        return new OrderStatusBroker();
     }
 }

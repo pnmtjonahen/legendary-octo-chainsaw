@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.WebSocketBroker;
+import nl.tjonahen.resto.OrderStatusBroker;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
@@ -34,12 +34,12 @@ public class OderController {
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
-    private final WebSocketBroker webSocketBroker;
+    private final OrderStatusBroker orderStatusBroker;
 
-    public OderController(OrderRepository orderRepository, OrderService orderService, WebSocketBroker webSocketBroker) {
+    public OderController(OrderRepository orderRepository, OrderService orderService, OrderStatusBroker orderStatusBroker) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
-        this.webSocketBroker = webSocketBroker;
+        this.orderStatusBroker = orderStatusBroker;
     }
 
     @GetMapping
@@ -66,7 +66,7 @@ public class OderController {
     public void serveDrinks(@PathVariable Long id) throws IOException {
         log.info("Drinks can be served for order {}", id);
         final Order order = orderRepository.getOne(id);
-        webSocketBroker.sendStatus(id, order.serveDrinks().name());
+        orderStatusBroker.sendStatus(id, order.serveDrinks().name());
         orderRepository.save(order);
     }
 
@@ -75,7 +75,7 @@ public class OderController {
     public void serveDishes(@PathVariable Long id) throws IOException {
         log.info("Food can be served for order {}", id);
         final Order order = orderRepository.getOne(id);
-        webSocketBroker.sendStatus(id, order.serveFood().name());
+        orderStatusBroker.sendStatus(id, order.serveFood().name());
         orderRepository.save(order);
     }
 
