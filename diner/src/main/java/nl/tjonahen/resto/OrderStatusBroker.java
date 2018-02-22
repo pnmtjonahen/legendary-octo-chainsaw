@@ -3,11 +3,13 @@ package nl.tjonahen.resto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketHandler;
@@ -15,10 +17,10 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 @Slf4j
-@Component
+@Service
 public class OrderStatusBroker implements WebSocketHandler {
 
-    private final Map<Long, WebSocketSession> sessions = new TreeMap<>();
+    private final Map<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> encodedMessage) throws Exception {
@@ -34,8 +36,7 @@ public class OrderStatusBroker implements WebSocketHandler {
                 .stream()
                 .filter(e -> e.getValue().getId().equals(session.getId()))
                 .map(e -> e.getKey())
-                .findFirst()
-                .ifPresent(id -> sessions.remove(id));
+                .forEach(id -> sessions.remove(id));
     }
 
     @Override
@@ -52,11 +53,14 @@ public class OrderStatusBroker implements WebSocketHandler {
         return false;
     }
 
-    public void sendStatus(Long id, String msg) throws IOException {
+    @Retryable(backoff = @Backoff(delay=5000))
+    public void sendStatus(Long id, String msg) throws IOException, OrderNotFoundException {
         if (sessions.containsKey(id)) {
             sessions.get(id).sendMessage(new TextMessage(msg));
+        } else {
+            log.warn("Table for order {} not (yet) found", id);
+            throw new OrderNotFoundException();
         }
-
     }
 
 }

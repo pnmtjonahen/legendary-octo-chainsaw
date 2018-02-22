@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -22,6 +23,7 @@ import org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator
 @SpringBootApplication
 @EnableRabbit
 @EnableWebSocket
+@EnableRetry
 public class DinerApplication implements WebSocketConfigurer {
 
     public static final String BAR_QUEUE = "bar-queue";

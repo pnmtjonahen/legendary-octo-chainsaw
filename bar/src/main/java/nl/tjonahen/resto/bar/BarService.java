@@ -44,6 +44,7 @@ public class BarService {
     public void receiveDrink(final Message message) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CouponMessage drinks = objectMapper.readValue(message.getBody(), CouponMessage.class);
+        log.info("Prepare drinks for order {}", drinks.getOrderid());
 
         for (Coupon drink : drinks.getItems()) {
             DRINKS.stream().filter(d -> d.getRef().equals(drink.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
@@ -54,6 +55,7 @@ public class BarService {
                 }
             });
         }
+        log.info("Drinks are ready for service for order {}", drinks.getOrderid());
         restTemplate.postForLocation(String.format("%s/%d/drinks",dinerUrl, drinks.getOrderid()), Void.class);
     }
 }

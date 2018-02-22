@@ -2,8 +2,11 @@ package nl.tjonahen.resto.diner.order;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import nl.tjonahen.resto.OrderNotFoundException;
 import nl.tjonahen.resto.OrderStatusBroker;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
@@ -64,21 +67,35 @@ public class OderController {
 
     @PostMapping("/{id}/drinks")
     public void serveDrinks(@PathVariable Long id) throws IOException {
-        log.info("Drinks can be served for order {}", id);
         final Order order = orderRepository.getOne(id);
-        orderStatusBroker.sendStatus(id, order.serveDrinks().name());
-        orderRepository.save(order);
-    }
+        try {
+            log.info("Serving drinks for order {}", id);
+            orderStatusBroker.sendStatus(id, order.serveDrinks().name());
+            order.setStatus(OrderStatus.DRINK_SERVED);
+            orderRepository.save(order);
+        } catch (OrderNotFoundException ex) {
+            log.error("Table for Order {} not found, drinks cannot be served", id);
+            order.setStatus(OrderStatus.NO_CUSTOMER);
+        } finally {
+            orderRepository.save(order);
+        }
 
+    }
 
     @PostMapping("/{id}/dishes")
     public void serveDishes(@PathVariable Long id) throws IOException {
-        log.info("Food can be served for order {}", id);
         final Order order = orderRepository.getOne(id);
-        orderStatusBroker.sendStatus(id, order.serveFood().name());
-        orderRepository.save(order);
+        try {
+            log.info("Serving food for order {}", id);
+            orderStatusBroker.sendStatus(id, order.serveFood().name());
+            order.setStatus(OrderStatus.FOOD_SERVED);
+        } catch (OrderNotFoundException ex) {
+            log.error("Table for Order {} not found, food cannot be served", id);
+            order.setStatus(OrderStatus.NO_CUSTOMER);
+        } finally {
+            orderRepository.save(order);
+        }
     }
-
 
     @PostMapping("/{id}/pay")
     @CrossOrigin
@@ -88,7 +105,8 @@ public class OderController {
 
     @CrossOrigin
     @PostMapping
-    public ResponseEntity<ResponseOrder> placeOrder(@RequestBody final List<RequestedItem> orderItems,
+    public ResponseEntity<ResponseOrder> placeOrder(@RequestBody
+            final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {
 
         final Order order = Order.builder()

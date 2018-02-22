@@ -43,6 +43,7 @@ public class KitchenService {
     public void receiveDrink(final Message message) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CouponMessage dishes = objectMapper.readValue(message.getBody(), CouponMessage.class);
+        log.info("Prepare food for order {}", dishes.getOrderid());
         for (Coupon dish : dishes.getItems()) {
             DISHES.stream().filter(d -> d.getRef().equals(dish.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
                 try {
@@ -52,7 +53,7 @@ public class KitchenService {
                 }
             });
         }
-
+        log.info("Food is ready for service for order {}", dishes.getOrderid());
         restTemplate.postForLocation(String.format("%s/%d/dishes",dinerUrl, dishes.getOrderid()), Void.class);
         
     }
