@@ -1,5 +1,3 @@
-
-
 package nl.tjonahen.resto;
 
 import org.springframework.amqp.core.Binding;
@@ -18,24 +16,24 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableRabbit
-public class BarApplication implements RabbitListenerConfigurer {
+public class BartenderApplication implements RabbitListenerConfigurer {
 
-    public static final String BAR_QUEUE = "bar-queue";
-    public static final String BAR_EXCHANGE = "bar-exchange";
-    public static final String BAR_KEY = "bar-key";
+    public static final String BARTENDER_QUEUE = "bartender-queue";
+    public static final String BARTENDER_EXCHANGE = "bartender-exchange";
+    public static final String BARTENDER_KEY = "bartender-key";
 
     public static void main(String[] args) {
-        SpringApplication.run(BarApplication.class, args);
+        SpringApplication.run(BartenderApplication.class, args);
     }
 
     @Bean
     public Queue queue() {
-        return new Queue(BAR_QUEUE, false);
+        return new Queue(BARTENDER_QUEUE, false);
     }
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(BAR_EXCHANGE);
+        return new TopicExchange(BARTENDER_EXCHANGE);
     }
 
     @Bean
@@ -45,7 +43,7 @@ public class BarApplication implements RabbitListenerConfigurer {
 
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(BAR_KEY);
+        return BindingBuilder.bind(queue).to(exchange).with(BARTENDER_KEY);
     }
 
     private DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {

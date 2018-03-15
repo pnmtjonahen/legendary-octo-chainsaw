@@ -23,10 +23,10 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class OrderService {
 
-    @Value("${dishesurl:http://localhost:18080/api/kitchen}")
-    private String dishesUrl;
-    @Value("${drinksurl:http://localhost:28080/api/bar}")
-    private String drinksUrl;
+    @Value("${dishesurl:http://localhost:18080/chef}")
+    private String chefUrl;
+    @Value("${drinksurl:http://localhost:28080/bartender}")
+    private String bartenderUrl;
 
     private final RestTemplate restTemplate;
     private final RabbitTemplate rabbitTemplate;
@@ -41,8 +41,8 @@ public class OrderService {
         if (drinks.isEmpty()) {
             return;
         }
-        log.info("Sending ordered drinks to the bar......");
-        rabbitTemplate.convertAndSend(DinerApplication.BAR_EXCHANGE, DinerApplication.BAR_KEY,
+        log.info("Sending ordered drinks to the bartender......");
+        rabbitTemplate.convertAndSend(DinerApplication.BARTENDER_EXCHANGE, DinerApplication.BARTENDER_KEY,
                 RequestedMessage.builder()
                         .items(drinks.stream().map(item -> MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).build()).collect(Collectors.toList()))
                         .orderid(orderid)
@@ -54,8 +54,8 @@ public class OrderService {
         if (dishes.isEmpty()) {
             return;
         }
-        log.info("Sending ordered dishes to the kitchen......");
-        rabbitTemplate.convertAndSend(DinerApplication.KITCHEN_EXCHANGE, DinerApplication.KITCHEN_KEY,
+        log.info("Sending ordered dishes to the chef......");
+        rabbitTemplate.convertAndSend(DinerApplication.CHEF_EXCHANGE, DinerApplication.CHEF_KEY,
                 RequestedMessage.builder()
                         .items(dishes.stream().map(item -> MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).build()).collect(Collectors.toList()))
                         .orderid(orderid)
@@ -64,30 +64,30 @@ public class OrderService {
 
     public List<Dish> getDishes() {
         ResponseEntity<List<Dish>> getResponse
-                = restTemplate.exchange(dishesUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
+                = restTemplate.exchange(chefUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
                 });
         return getResponse.getBody();
     }
 
     public List<Drink> getDrinks() {
         ResponseEntity<List<Drink>> getResponse
-                = restTemplate.exchange(drinksUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Drink>>() {
+                = restTemplate.exchange(bartenderUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Drink>>() {
                 });
         return getResponse.getBody();
     }
 
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(dishesUrl + "/" + item.getRef(), Dish.class).getPrice();
+            return restTemplate.getForObject(chefUrl + "/" + item.getRef(), Dish.class).getPrice();
         }
-        return restTemplate.getForObject(drinksUrl + "/" + item.getRef(), Dish.class).getPrice();
+        return restTemplate.getForObject(bartenderUrl + "/" + item.getRef(), Dish.class).getPrice();
     }
 
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(dishesUrl + "/" + item.getRef(), Dish.class).getName();
+            return restTemplate.getForObject(chefUrl + "/" + item.getRef(), Dish.class).getName();
         }
-        return restTemplate.getForObject(drinksUrl + "/" + item.getRef(), Dish.class).getName();
+        return restTemplate.getForObject(bartenderUrl + "/" + item.getRef(), Dish.class).getName();
 
     }
     

@@ -12,25 +12,25 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("/api/kitchen")
-public class KitchenController {
+@RequestMapping("/chef")
+public class ChefController {
 
-    private final KitchenService kitchenService;
+    private final ChefService chefService;
 
-    public KitchenController(KitchenService kitchenService) {
-        this.kitchenService = kitchenService;
+    public ChefController(ChefService chefService) {
+        this.chefService = chefService;
     }
     
     
     @GetMapping
     @JsonView(PublicView.class)
     public List<Dish> getAllDishes() {
-        return kitchenService.getAllDishes();
+        return chefService.getAllDishes();
     }
     
     @GetMapping("/{ref}")
     public Dish getDish(@PathVariable String ref) {
-        return kitchenService.getAllDishes().stream().filter(d -> d.getRef().equals(ref)).findFirst().orElse(Dish.builder().build());
+        return chefService.getAllDishes().stream().filter(d -> d.getRef().equals(ref)).findFirst().orElse(Dish.builder().build());
     }
 
 }

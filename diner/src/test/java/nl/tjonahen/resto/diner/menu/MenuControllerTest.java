@@ -1,39 +1,48 @@
 package nl.tjonahen.resto.diner.menu;
 
-import java.util.ArrayList;
-import nl.tjonahen.resto.diner.order.service.OrderService;
-import static org.junit.Assert.assertNotNull;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  *
  * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@WebMvcTest
 public class MenuControllerTest {
 
-    @Mock
-    private OrderService orderServiceMock;
+    @Rule
+    public WireMockRule rule = new WireMockRule(8888);
     
-    @InjectMocks
-    private MenuController menuController;
+    @Autowired
+    private MockMvc mockMvc;
+    
     
     
     @Test
-    public void testGetMenu() {
+    public void testGetMenu() throws Exception {
         
-        when(orderServiceMock.getDishes()).thenReturn(new ArrayList<>());
-        when(orderServiceMock.getDrinks()).thenReturn(new ArrayList<>());
-        Menu menu = menuController.getMenu();
-        
-        assertNotNull(menu);
-        assertNotNull(menu.getDishes());
-        assertNotNull(menu.getDrinks());
+        WireMock wireMock = new WireMock(8888);
+        wireMock.register(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/chef")).willReturn(aResponse().withStatus(200).withBody("")));
+        wireMock.register(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/bartender")).willReturn(aResponse().withStatus(200).withBody("")));
+                
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/menu").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andExpect(content().string(""));
     }
     
 }

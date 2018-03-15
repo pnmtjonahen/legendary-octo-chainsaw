@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.BarApplication;
+import nl.tjonahen.resto.BartenderApplication;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,14 +18,14 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @Service
-public class BarService {
+public class BartenderService {
 
     @Value("${dinerurl:http://localhost:8080/api/order}")
     private String dinerUrl;
 
     private final RestTemplate restTemplate;
 
-    public BarService(RestTemplate restTemplate) {
+    public BartenderService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -40,7 +40,7 @@ public class BarService {
         return DRINKS;
     }
 
-    @RabbitListener(queues = BarApplication.BAR_QUEUE)
+    @RabbitListener(queues = BartenderApplication.BARTENDER_QUEUE)
     public void receiveDrink(final Message message) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CouponMessage drinks = objectMapper.readValue(message.getBody(), CouponMessage.class);

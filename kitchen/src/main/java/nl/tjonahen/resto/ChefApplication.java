@@ -16,24 +16,24 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableRabbit
-public class KitchenApplication  implements RabbitListenerConfigurer {
-    public static final String KITCHEN_QUEUE = "kitchen-queue";
-    public static final String KITCHEN_EXCHANGE = "kitchen-exchange";
-    public static final String KITCHEN_KEY = "kitchen-key";
+public class ChefApplication  implements RabbitListenerConfigurer {
+    public static final String CHEF_QUEUE = "chef-queue";
+    public static final String CHEF_EXCHANGE = "chef-exchange";
+    public static final String CHEF_KEY = "chef-key";
 
     public static void main(String[] args) {
-        SpringApplication.run(KitchenApplication.class, args);
+        SpringApplication.run(ChefApplication.class, args);
     }
 
 
     @Bean
     public Queue queue() {
-        return new Queue(KITCHEN_QUEUE, false);
+        return new Queue(CHEF_QUEUE, false);
     }
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(KITCHEN_EXCHANGE);
+        return new TopicExchange(CHEF_EXCHANGE);
     }
     
     @Bean
@@ -44,7 +44,7 @@ public class KitchenApplication  implements RabbitListenerConfigurer {
 
     @Bean
     public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(KITCHEN_KEY);
+        return BindingBuilder.bind(queue).to(exchange).with(CHEF_KEY);
     }
     private DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();

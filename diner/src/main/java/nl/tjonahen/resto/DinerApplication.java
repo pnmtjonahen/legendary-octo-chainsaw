@@ -26,13 +26,13 @@ import org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator
 @EnableRetry
 public class DinerApplication implements WebSocketConfigurer {
 
-    public static final String BAR_QUEUE = "bar-queue";
-    public static final String BAR_EXCHANGE = "bar-exchange";
-    public static final String BAR_KEY = "bar-key";
+    public static final String BARTENDER_QUEUE = "bartender-queue";
+    public static final String BARTENDER_EXCHANGE = "bartender-exchange";
+    public static final String BARTENDER_KEY = "bartender-key";
 
-    public static final String KITCHEN_QUEUE = "kitchen-queue";
-    public static final String KITCHEN_EXCHANGE = "kitchen-exchange";
-    public static final String KITCHEN_KEY = "kitchen-key";
+    public static final String CHEF_QUEUE = "chef-queue";
+    public static final String CHEF_EXCHANGE = "chef-exchange";
+    public static final String CHEF_KEY = "chef-key";
     
     public static void main(String[] args) {
         SpringApplication.run(DinerApplication.class, args);
@@ -47,11 +47,11 @@ public class DinerApplication implements WebSocketConfigurer {
 
     @Bean
     public Binding barBinding() {
-        return BindingBuilder.bind(new Queue(BAR_QUEUE, false)).to(new TopicExchange(BAR_EXCHANGE)).with(BAR_KEY);
+        return BindingBuilder.bind(new Queue(BARTENDER_QUEUE, false)).to(new TopicExchange(BARTENDER_EXCHANGE)).with(BARTENDER_KEY);
     }
     @Bean
     public Binding kitchenBinding() {
-        return BindingBuilder.bind(new Queue(KITCHEN_QUEUE, false)).to(new TopicExchange(KITCHEN_EXCHANGE)).with(KITCHEN_KEY);
+        return BindingBuilder.bind(new Queue(CHEF_QUEUE, false)).to(new TopicExchange(CHEF_EXCHANGE)).with(CHEF_KEY);
     }
 
 
