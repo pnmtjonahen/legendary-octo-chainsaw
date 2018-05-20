@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class ChefService {
-    @Value("${dinerurl:http://localhost:8080/api/order}")
+    @Value("${diner.url}")
     private String dinerUrl;
 
     private final RestTemplate restTemplate;

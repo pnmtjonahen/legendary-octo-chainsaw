@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class BartenderService {
 
-    @Value("${dinerurl:http://localhost:8080/api/order}")
+    @Value("${diner.url}")
     private String dinerUrl;
 
     private final RestTemplate restTemplate;
