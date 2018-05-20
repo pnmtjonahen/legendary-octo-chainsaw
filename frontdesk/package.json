@@ -1,3 +1,8 @@
 {
-    "name": "frontdesk", "version": "1.0.0", "keywords": ["util", "functional", "server", "client", "browser"], "author": "Philippe Tjon - A - Hen philippe@tjonahen.nl", "contributors": [], "dependencies": {}
+    "name": "frontdesk",
+    "version": "1.0.0",
+    "keywords": ["util", "functional", "server", "client", "browser"],
+    "author": "Philippe Tjon - A - Hen philippe@tjonahen.nl",
+    "contributors": [],
+    "dependencies": {}
 }
