@@ -23,9 +23,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class OrderService {
 
-    @Value("${dishesurl:http://localhost:18080/chef}")
+    @Value("${chef.url:http://localhost:18080/chef}")
     private String chefUrl;
-    @Value("${drinksurl:http://localhost:28080/bartender}")
+    @Value("${bartender.url:http://localhost:28080/bartender}")
     private String bartenderUrl;
 
     private final RestTemplate restTemplate;
