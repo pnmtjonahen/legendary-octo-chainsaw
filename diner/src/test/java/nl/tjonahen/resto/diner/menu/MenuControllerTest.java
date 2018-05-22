@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,23 +22,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
  */
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class MenuControllerTest {
 
     @Rule
-    public WireMockRule rule = new WireMockRule(8888);
+    public WireMockRule rule = new WireMockRule(19888);
     
     @Autowired
     private MockMvc mockMvc;
     
-    
-    
+    @Ignore
     @Test
     public void testGetMenu() throws Exception {
         
-        WireMock wireMock = new WireMock(8888);
+        WireMock wireMock = new WireMock(19888);
         wireMock.register(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/chef")).willReturn(aResponse().withStatus(200).withBody("")));
         wireMock.register(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/bartender")).willReturn(aResponse().withStatus(200).withBody("")));
                 

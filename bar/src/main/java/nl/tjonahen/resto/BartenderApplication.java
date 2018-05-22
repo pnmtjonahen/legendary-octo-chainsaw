@@ -1,5 +1,6 @@
 package nl.tjonahen.resto;
 
+import brave.sampler.Sampler;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -56,4 +57,9 @@ public class BartenderApplication implements RabbitListenerConfigurer {
     public void configureRabbitListeners(final RabbitListenerEndpointRegistrar registrar) {
         registrar.setMessageHandlerMethodFactory(messageHandlerMethodFactory());
     }
+
+    @Bean
+    public Sampler defaultSampler() {
+        return Sampler.ALWAYS_SAMPLE;
+    }    
 }

@@ -1,5 +1,6 @@
 package nl.tjonahen.resto;
 
+import brave.sampler.Sampler;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -33,7 +34,7 @@ public class DinerApplication implements WebSocketConfigurer {
     public static final String CHEF_QUEUE = "chef-queue";
     public static final String CHEF_EXCHANGE = "chef-exchange";
     public static final String CHEF_KEY = "chef-key";
-    
+
     public static void main(String[] args) {
         SpringApplication.run(DinerApplication.class, args);
     }
@@ -43,17 +44,15 @@ public class DinerApplication implements WebSocketConfigurer {
         return new RestTemplate();
     }
 
-    
-
     @Bean
     public Binding barBinding() {
         return BindingBuilder.bind(new Queue(BARTENDER_QUEUE, false)).to(new TopicExchange(BARTENDER_EXCHANGE)).with(BARTENDER_KEY);
     }
+
     @Bean
     public Binding kitchenBinding() {
         return BindingBuilder.bind(new Queue(CHEF_QUEUE, false)).to(new TopicExchange(CHEF_EXCHANGE)).with(CHEF_KEY);
     }
-
 
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
@@ -65,8 +64,6 @@ public class DinerApplication implements WebSocketConfigurer {
     @Autowired
     private OrderStatusBroker orderStatusBroker;
 
-    
-    
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(handler(orderStatusBroker), "/orderstatus").setAllowedOrigins("*");
@@ -76,9 +73,15 @@ public class DinerApplication implements WebSocketConfigurer {
     public WebSocketHandler handler(OrderStatusBroker orderStatusBroker) {
         return new ExceptionWebSocketHandlerDecorator(orderStatusBroker);
     }
-    
+
     @Bean
     public OrderStatusBroker orderStatusBroker() {
         return new OrderStatusBroker();
     }
+
+    @Bean
+    public Sampler defaultSampler() {
+        return Sampler.ALWAYS_SAMPLE;
+    }
+    
 }
