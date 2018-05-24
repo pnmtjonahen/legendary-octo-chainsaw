@@ -1,5 +1,7 @@
 package nl.tjonahen.resto;
 
+import brave.Span;
+import brave.Tracer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
@@ -7,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -16,12 +19,26 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+/**
+ * OrderStatusBroker is a WebSocket that allows the server to push an order status update to the client. 
+ * 
+ * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
+ */
 @Slf4j
 @Service
 public class OrderStatusBroker implements WebSocketHandler {
 
     private final Map<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    
+    private Tracer tracer;
 
+    @Autowired
+    public void setTracer(Tracer tracer) {
+        this.tracer = tracer;
+    }
+   
+    
+    
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> encodedMessage) throws Exception {
         OrderId value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderId.class);
@@ -53,10 +70,16 @@ public class OrderStatusBroker implements WebSocketHandler {
         return false;
     }
 
+    /*
+    * Retryable method, it is posible that the order processing is faster then the browser is able to setup a WebSocket. So we retry the sendstatus a number of times.
+    */
     @Retryable(backoff = @Backoff(delay=5000))
     public void sendStatus(Long id, String msg) throws IOException, OrderNotFoundException {
         if (sessions.containsKey(id)) {
+            // create new span to trace websocket cal to client
+            final Span span = tracer.newChild(tracer.currentSpan().context()).name("sendStatus").start();
             sessions.get(id).sendMessage(new TextMessage(msg));
+            span.finish();
         } else {
             log.warn("Table for order {} not (yet) found", id);
             throw new OrderNotFoundException();

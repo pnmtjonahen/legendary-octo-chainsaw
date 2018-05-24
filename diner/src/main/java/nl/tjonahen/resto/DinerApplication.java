@@ -9,23 +9,18 @@ import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator;
 
 @SpringBootApplication
 @EnableRabbit
 @EnableWebSocket
 @EnableRetry
-public class DinerApplication implements WebSocketConfigurer {
+public class DinerApplication {
 
     public static final String BARTENDER_QUEUE = "bartender-queue";
     public static final String BARTENDER_EXCHANGE = "bartender-exchange";
@@ -59,24 +54,6 @@ public class DinerApplication implements WebSocketConfigurer {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         return rabbitTemplate;
-    }
-
-    @Autowired
-    private OrderStatusBroker orderStatusBroker;
-
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(handler(orderStatusBroker), "/orderstatus").setAllowedOrigins("*");
-    }
-
-    @Bean
-    public WebSocketHandler handler(OrderStatusBroker orderStatusBroker) {
-        return new ExceptionWebSocketHandlerDecorator(orderStatusBroker);
-    }
-
-    @Bean
-    public OrderStatusBroker orderStatusBroker() {
-        return new OrderStatusBroker();
     }
 
     @Bean
