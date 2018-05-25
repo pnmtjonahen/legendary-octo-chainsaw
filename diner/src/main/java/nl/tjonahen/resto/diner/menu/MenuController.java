@@ -19,7 +19,7 @@ public class MenuController {
 
     private final OrderService orderService;
 
-    public MenuController(OrderService orderService) {
+    public MenuController(final OrderService orderService) {
         this.orderService = orderService;
     }
 

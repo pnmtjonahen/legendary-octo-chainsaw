@@ -10,6 +10,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -43,6 +44,11 @@ public class ChefService {
     public void receiveDrink(final Message message) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         CouponMessage dishes = objectMapper.readValue(message.getBody(), CouponMessage.class);
+        processCoupon(dishes);
+        
+    }
+
+    public void processCoupon(CouponMessage dishes) throws RestClientException {
         log.info("Prepare food for order {}", dishes.getOrderid());
         for (Coupon dish : dishes.getItems()) {
             DISHES.stream().filter(d -> d.getRef().equals(dish.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
@@ -55,6 +61,5 @@ public class ChefService {
         }
         log.info("Food is ready for service for order {}", dishes.getOrderid());
         restTemplate.postForLocation(String.format("%s/%d/dishes",dinerUrl, dishes.getOrderid()), Void.class);
-        
     }
 }
