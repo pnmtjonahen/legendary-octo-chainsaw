@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("/chef")
+@RequestMapping("")
 public class ChefController {
 
     private final ChefService chefService;
@@ -25,7 +25,7 @@ public class ChefController {
     }
     
     
-    @GetMapping
+    @GetMapping("/menu")
     @JsonView(PublicView.class)
     public List<Dish> getAllDishes() {
         return chefService.getAllDishes();

@@ -1,14 +1,10 @@
 package nl.tjonahen.resto.kitchen;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.ChefApplication;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -39,15 +35,7 @@ public class ChefService {
     public List<Dish> getAllDishes() {
         return DISHES;
     }
-    
-    @RabbitListener(queues = ChefApplication.CHEF_QUEUE)
-    public void receiveDrink(final Message message) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        CouponMessage dishes = objectMapper.readValue(message.getBody(), CouponMessage.class);
-        processCoupon(dishes);
-        
-    }
-
+    @Async
     public void processCoupon(CouponMessage dishes) throws RestClientException {
         log.info("Prepare food for order {}", dishes.getOrderid());
         for (Coupon dish : dishes.getItems()) {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("/bartender")
+@RequestMapping("/")
 public class BartenderController {
     
     private final BartenderService bartenderService;
@@ -26,7 +26,7 @@ public class BartenderController {
      * Get all the drinks the bartender can make.
      * @return a list of drinks.
      */
-    @GetMapping
+    @GetMapping("/menu")
     @JsonView(PublicView.class)
     public List<Drink> getAllDrinks() {
         return bartenderService.getAllDrinks();
