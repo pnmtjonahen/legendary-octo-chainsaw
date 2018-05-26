@@ -21,8 +21,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 /**
  * OrderStatusBroker is a WebSocket that allows the server to push an order status update to the client. 
- * 
- * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
  */
 @Slf4j
 @Service
@@ -30,6 +28,10 @@ public class OrderStatusBroker implements WebSocketHandler {
 
     private final Map<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();
     
+    /*
+     * Tracer object to allow adding the websocket push to the current trace span. 
+     * Programatically adding trace to sleuth/zipkin 
+     */
     private Tracer tracer;
 
     @Autowired
@@ -38,7 +40,12 @@ public class OrderStatusBroker implements WebSocketHandler {
     }
    
     
-    
+    /**
+     * Handle he websocket message, The frontend wil send the orderid to the websocket to indicate on what order it is waiting.
+     * @param session -
+     * @param encodedMessage the message containing the order 
+     * @throws Exception -
+     */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> encodedMessage) throws Exception {
         OrderId value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderId.class);
@@ -91,6 +98,5 @@ public class OrderStatusBroker implements WebSocketHandler {
 @Getter
 @Setter
 class OrderId {
-
     private String orderid;
 }

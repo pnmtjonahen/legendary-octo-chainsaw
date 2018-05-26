@@ -27,14 +27,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Order {
+
     @Id
-     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Enumerated(EnumType.STRING)
     @Setter
     private OrderStatus status;
-    
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 
@@ -45,7 +46,7 @@ public class Order {
     private boolean hasDrinks() {
         return orderItems.stream().filter(i -> i.getOrderItemType() == OrderItemType.DRINK).count() > 0;
     }
-      
+
     synchronized public OrderStatus serveDrinks() {
 
         if (this.hasDishes()) {
@@ -59,7 +60,7 @@ public class Order {
         }
         return this.getStatus();
     }
-    
+
     synchronized public OrderStatus serveFood() {
 
         if (this.hasDrinks()) {
@@ -74,6 +75,5 @@ public class Order {
 
         return this.getStatus();
     }
-    
-    
+
 }

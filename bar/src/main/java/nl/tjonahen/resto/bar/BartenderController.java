@@ -37,7 +37,7 @@ public class BartenderController {
      * @param ref drink reference
      * @return The requested drink info
      */
-    @GetMapping("/{ref}")
+    @GetMapping("/drink/{ref}")
     public Drink getDrink(@PathVariable String ref) {
         return bartenderService.getAllDrinks().stream().filter(d -> d.getRef().equals(ref)).findFirst().orElse(Drink.builder().build());
     }

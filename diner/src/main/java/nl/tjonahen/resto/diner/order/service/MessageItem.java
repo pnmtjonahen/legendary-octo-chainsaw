@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MessageItem {
+    private final Long id;
     private final String ref;
     private final Long quantity;
 }

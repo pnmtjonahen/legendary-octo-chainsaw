@@ -65,7 +65,7 @@ public class OderController {
 
     }
 
-    @PostMapping("/{id}/drinks")
+    @PostMapping("/{id}/serve/drinks")
     public void serveDrinks(@PathVariable Long id) throws IOException {
         final Order order = orderRepository.getOne(id);
         try {
@@ -82,13 +82,34 @@ public class OderController {
 
     }
 
-    @PostMapping("/{id}/dishes")
+    @PostMapping("/{id}/serve/dishes")
     public void serveDishes(@PathVariable Long id) throws IOException {
         final Order order = orderRepository.getOne(id);
         try {
             log.info("Serving food for order {}", id);
             orderStatusBroker.sendStatus(id, order.serveFood().name());
             order.setStatus(OrderStatus.FOOD_SERVED);
+        } catch (OrderNotFoundException ex) {
+            log.error("Table for Order {} not found, food cannot be served", id);
+            order.setStatus(OrderStatus.NO_CUSTOMER);
+        } finally {
+            orderRepository.save(order);
+        }
+    }
+    @PostMapping("/{id}/serve/{did}")
+    public void serveDish(@PathVariable Long id, @PathVariable Long did) throws IOException {
+        final Order order = orderRepository.getOne(id);
+        try {
+            order.getOrderItems()
+                .stream()
+                .filter(item -> item.getOrderItemType() == OrderItemType.DISH && item.getId().equals(did)).forEach(item -> item.setPrepared(true));
+            if (order.getOrderItems()
+                .stream()
+                .filter(item -> item.getOrderItemType() == OrderItemType.DISH && !item.isPrepared()).count() ==0) {
+                log.info("Serving food for order {}", id);
+                orderStatusBroker.sendStatus(id, order.serveFood().name());
+                order.setStatus(OrderStatus.FOOD_SERVED);
+            }
         } catch (OrderNotFoundException ex) {
             log.error("Table for Order {} not found, food cannot be served", id);
             order.setStatus(OrderStatus.NO_CUSTOMER);

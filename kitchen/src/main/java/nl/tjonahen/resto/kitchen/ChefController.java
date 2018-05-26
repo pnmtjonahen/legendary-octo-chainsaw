@@ -31,7 +31,7 @@ public class ChefController {
         return chefService.getAllDishes();
     }
     
-    @GetMapping("/{ref}")
+    @GetMapping("/dish/{ref}")
     public Dish getDish(@PathVariable String ref) {
         return chefService.getAllDishes().stream().filter(d -> d.getRef().equals(ref)).findFirst().orElse(Dish.builder().build());
     }

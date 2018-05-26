@@ -16,6 +16,10 @@ public class DinerWebSocketConfigurer implements WebSocketConfigurer {
         this.orderStatusBroker = orderStatusBroker;
     }
 
+    /*
+     * Register our OrderStatusBroker as the websocket handler, wrapped in a excption decorator handler. 
+     * Set allow origins to * to enable other domains to connect to our websocket. 
+     */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new ExceptionWebSocketHandlerDecorator(orderStatusBroker), "/orderstatus").setAllowedOrigins("*");

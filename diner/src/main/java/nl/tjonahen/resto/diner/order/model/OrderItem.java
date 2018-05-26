@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
@@ -35,4 +36,8 @@ public class OrderItem {
 
     @Enumerated(EnumType.STRING)
     private OrderItemType orderItemType;
+    
+    @Column(name="ITEM_PREPED")
+    @Setter
+    private boolean prepared;
 }

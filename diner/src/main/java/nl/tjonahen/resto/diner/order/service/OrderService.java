@@ -1,5 +1,6 @@
 package nl.tjonahen.resto.diner.order.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +55,13 @@ public class OrderService {
             return;
         }
         log.info("Sending ordered dishes to the chef......");
-        HttpEntity<RequestedMessage> request = new HttpEntity<>(RequestedMessage.builder()
-                        .items(dishes.stream().map(item -> MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).build()).collect(Collectors.toList()))
-                        .orderid(orderid)
-                        .build());
-        restTemplate.exchange(HTTP_CHEF + "/order", HttpMethod.POST, request, RequestedMessage.class);
+        dishes.stream().forEach(item -> {
+            HttpEntity<RequestedMessage> request = new HttpEntity<>(RequestedMessage.builder()
+                    .items(Arrays.asList(MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).id(item.getId()).build()))
+                    .orderid(orderid)
+                    .build());
+            restTemplate.exchange(HTTP_CHEF + "/order", HttpMethod.POST, request, RequestedMessage.class);
+        });
     }
 
     public List<Dish> getDishes() {
@@ -77,16 +80,16 @@ public class OrderService {
 
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(HTTP_CHEF +  "/" + item.getRef(), Dish.class).getPrice();
+            return restTemplate.getForObject(HTTP_CHEF + "/dish/" + item.getRef(), Dish.class).getPrice();
         }
-        return restTemplate.getForObject(HTTP_BARTENDER + "/" + item.getRef(), Dish.class).getPrice();
+        return restTemplate.getForObject(HTTP_BARTENDER + "/drink/" + item.getRef(), Dish.class).getPrice();
     }
 
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(HTTP_CHEF + "/" + item.getRef(), Dish.class).getName();
+            return restTemplate.getForObject(HTTP_CHEF + "/dish/" + item.getRef(), Dish.class).getName();
         }
-        return restTemplate.getForObject(HTTP_BARTENDER + "/" + item.getRef(), Dish.class).getName();
+        return restTemplate.getForObject(HTTP_BARTENDER + "/drink/" + item.getRef(), Dish.class).getName();
 
     }
 

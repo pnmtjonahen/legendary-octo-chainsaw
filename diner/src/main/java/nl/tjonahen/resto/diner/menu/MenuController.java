@@ -23,6 +23,10 @@ public class MenuController {
         this.orderService = orderService;
     }
 
+    /*
+     * Menu resource, frontdesk uses this rest service to get the menu.
+    * @CrossOrigin as the frontdesk has a different domain then this service
+     */
     @CrossOrigin
     @GetMapping
     public Menu getMenu() {

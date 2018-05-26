@@ -56,6 +56,6 @@ public class BartenderService {
             });
         }
         log.info("Drinks are ready for service for order {}", drinks.getOrderid());
-        restTemplate.postForLocation(String.format("%s/%d/drinks",dinerUrl, drinks.getOrderid()), Void.class);
+        restTemplate.postForLocation(String.format("%s/%d/serve/drinks",dinerUrl, drinks.getOrderid()), Void.class);
     }
 }

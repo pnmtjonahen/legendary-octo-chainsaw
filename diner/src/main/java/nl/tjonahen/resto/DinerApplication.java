@@ -14,8 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
@@ -37,23 +35,28 @@ public class DinerApplication {
         SpringApplication.run(DinerApplication.class, args);
     }
 
-    @LoadBalanced    
+    /*
+     * LoadBalanced RestTemplate this uses the EurekaClient for service discovery and Ribbon for loadbalancing 
+     * 
+     */
+    @LoadBalanced
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplate(clientHttpRequestFactory());
+        return new RestTemplate();
     }
 
-    private ClientHttpRequestFactory clientHttpRequestFactory() {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setReadTimeout(20000);
-        factory.setConnectTimeout(2000);
-        return factory;
-    }
+
+    /*
+     * The Queue binding 
+     */
     @Bean
     public Binding barBinding() {
         return BindingBuilder.bind(new Queue(BARTENDER_QUEUE, false)).to(new TopicExchange(BARTENDER_EXCHANGE)).with(BARTENDER_KEY);
     }
 
+    /*
+     * The rabbit template, uses a jackson2json message converter to seamingless conver to and from json.
+     */
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
@@ -61,9 +64,12 @@ public class DinerApplication {
         return rabbitTemplate;
     }
 
+    /*
+     * Sleuth/zipkin brave sampler, Set to sample all requests. 
+     */
     @Bean
     public Sampler defaultSampler() {
         return Sampler.ALWAYS_SAMPLE;
     }
-    
+
 }

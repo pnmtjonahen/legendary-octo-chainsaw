@@ -83,7 +83,7 @@
                     <profiles>
                         <profile>local</profile>
                     </profiles>
-                    <fork>true</fork>
+                    
                 </configuration>
             </plugin>
             <plugin>

@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Coupon {
+    private Long id;
     private String ref;
     private Long quantity;
 }
