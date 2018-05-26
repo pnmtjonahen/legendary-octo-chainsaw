@@ -1,5 +1,5 @@
 # Resto
-Chez Philippe
+Chez, Philippe
 
 Resto, Chez Philippe, Is a virtual restaurant where you can order food and drinks. The restaurant is a showcase of all kinds of different technologies.
 
@@ -20,4 +20,13 @@ The chef microservice is responsible for preparing the food.
 ### bartender
 The bartender microservice is responsible for mixing drinks.
 
-
+### Technologies
+- REST endpoints: All services for getting the menu and posting new orders by the frontdesk are REST endpoints.
+- Diner -> Bartender and Diner -> Chef for getting the menu are done with REST endpoints.
+- WebSocket: frontdesk opens a websocket to get status updates on submitted order. Diner sends (pushes) status updates to the frontdesk via this websocket.
+- AMQP (rabbitmq): When submitting new drink order to the bartender AMQP is used. 
+- @Async methods
+- Config server
+- Zipkin server / sleuth for tracing
+- Eureka Server / Eureka client / Ribbon @LoadBalanced RestTemplates
+- JPA repository for database access
