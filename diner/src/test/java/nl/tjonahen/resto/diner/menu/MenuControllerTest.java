@@ -1,49 +1,37 @@
 package nl.tjonahen.resto.diner.menu;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.junit.Ignore;
-import org.junit.Rule;
+import java.util.ArrayList;
+import nl.tjonahen.resto.diner.order.service.OrderService;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  *
  * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
  */
-
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@RunWith(MockitoJUnitRunner.class)
 public class MenuControllerTest {
 
-    @Rule
-    public WireMockRule rule = new WireMockRule(19888);
+    @Mock
+    private OrderService orderService;
     
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private MenuController menuController;
     
-    @Ignore
     @Test
     public void testGetMenu() throws Exception {
+        when(orderService.getDishes()).thenReturn(new ArrayList<>());
+        when(orderService.getDrinks()).thenReturn(new ArrayList<>());
         
-        WireMock wireMock = new WireMock(19888);
-        wireMock.register(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/chef")).willReturn(aResponse().withStatus(200).withBody("")));
-        wireMock.register(com.github.tomakehurst.wiremock.client.WireMock.get(urlEqualTo("/bartender")).willReturn(aResponse().withStatus(200).withBody("")));
-                
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/menu").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().string(""));
+        Menu menu = menuController.getMenu();
+        
+        assertTrue(menu.getDishes().isEmpty());
+        assertTrue(menu.getDrinks().isEmpty());
     }
-    
+
 }

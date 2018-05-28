@@ -1,5 +1,7 @@
 package nl.tjonahen.resto.diner.order.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,6 +10,7 @@ import nl.tjonahen.resto.DinerApplication;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -23,9 +26,10 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class OrderService {
-
-    private static final String HTTP_CHEF = "http://chef";
-    private static final String HTTP_BARTENDER = "http://bartender";
+    @Value("${chef.url:http://chef}")
+    private String cherUrl;
+    @Value("${bartender.url:http://bartender}")
+    private String bartenderUrl;
 
     private final RestTemplate restTemplate;
 
@@ -60,36 +64,45 @@ public class OrderService {
                     .items(Arrays.asList(MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).id(item.getId()).build()))
                     .orderid(orderid)
                     .build());
-            restTemplate.exchange(HTTP_CHEF + "/order", HttpMethod.POST, request, RequestedMessage.class);
+            restTemplate.exchange(cherUrl + "/order", HttpMethod.POST, request, RequestedMessage.class);
         });
     }
 
+    @HystrixCommand(fallbackMethod = "defaultDishes")
     public List<Dish> getDishes() {
         ResponseEntity<List<Dish>> getResponse
-                = restTemplate.exchange(HTTP_CHEF + "/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
+                = restTemplate.exchange(cherUrl + "/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
                 });
         return getResponse.getBody();
     }
+    public List<Dish> defaultDishes() { 
+        return new ArrayList<>();
+    }
 
+    @HystrixCommand(fallbackMethod = "defaultDrinks")
     public List<Drink> getDrinks() {
         ResponseEntity<List<Drink>> getResponse
-                = restTemplate.exchange(HTTP_BARTENDER + "/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Drink>>() {
+                = restTemplate.exchange(bartenderUrl + "/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Drink>>() {
                 });
         return getResponse.getBody();
     }
-
+    
+    public List<Drink> defaultDrinks() {
+        return Arrays.asList(new Drink("water", "water", "complementary water", 0L));
+    }
+    
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(HTTP_CHEF + "/dish/" + item.getRef(), Dish.class).getPrice();
+            return restTemplate.getForObject(cherUrl + "/dish/" + item.getRef(), Dish.class).getPrice();
         }
-        return restTemplate.getForObject(HTTP_BARTENDER + "/drink/" + item.getRef(), Dish.class).getPrice();
+        return restTemplate.getForObject(bartenderUrl + "/drink/" + item.getRef(), Dish.class).getPrice();
     }
 
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(HTTP_CHEF + "/dish/" + item.getRef(), Dish.class).getName();
+            return restTemplate.getForObject(cherUrl + "/dish/" + item.getRef(), Dish.class).getName();
         }
-        return restTemplate.getForObject(HTTP_BARTENDER + "/drink/" + item.getRef(), Dish.class).getName();
+        return restTemplate.getForObject(bartenderUrl + "/drink/" + item.getRef(), Dish.class).getName();
 
     }
 
