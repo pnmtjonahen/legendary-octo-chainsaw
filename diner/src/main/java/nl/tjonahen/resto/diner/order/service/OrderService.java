@@ -1,10 +1,13 @@
 package nl.tjonahen.resto.diner.order.service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.DinerApplication;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
@@ -26,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class OrderService {
+
     @Value("${chef.url}")
     private String cherUrl;
     @Value("${bartender.url}")
@@ -68,14 +72,16 @@ public class OrderService {
         });
     }
 
-    @HystrixCommand(fallbackMethod = "defaultDishes")
+    @HystrixCommand(fallbackMethod = "defaultDishes", commandProperties = {
+        @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")})
     public List<Dish> getDishes() {
         ResponseEntity<List<Dish>> getResponse
                 = restTemplate.exchange(cherUrl + "/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
                 });
         return getResponse.getBody();
     }
-    public List<Dish> defaultDishes() { 
+
+    public List<Dish> defaultDishes() {
         return new ArrayList<>();
     }
 
@@ -86,24 +92,43 @@ public class OrderService {
                 });
         return getResponse.getBody();
     }
-    
+
     public List<Drink> defaultDrinks() {
         return Arrays.asList(new Drink("water", "water", "complementary water", 0L));
     }
-    
+
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(cherUrl + "/dish/" + item.getRef(), Dish.class).getPrice();
+            final Dish dish = restTemplate.getForObject(cherUrl + "/dish/" + item.getRef(), Dish.class);
+            return dish == null ? 0L : dish.getPrice();
         }
-        return restTemplate.getForObject(bartenderUrl + "/drink/" + item.getRef(), Dish.class).getPrice();
+        final Drink drink = restTemplate.getForObject(bartenderUrl + "/drink/" + item.getRef(), Drink.class);
+        return drink == null ? 0L : drink.getPrice();
     }
 
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            return restTemplate.getForObject(cherUrl + "/dish/" + item.getRef(), Dish.class).getName();
+            final Dish dish = restTemplate.getForObject(cherUrl + "/dish/" + item.getRef(), Dish.class);
+            return dish == null ? "" : dish.getName();
         }
-        return restTemplate.getForObject(bartenderUrl + "/drink/" + item.getRef(), Dish.class).getName();
+        final Drink drink = restTemplate.getForObject(bartenderUrl + "/drink/" + item.getRef(), Drink.class);
+        return drink == null ? "" : drink.getName();
 
     }
 
+}
+
+@Getter
+@Builder
+class MessageItem {
+    private final Long id;
+    private final String ref;
+    private final Long quantity;
+}
+
+@Getter
+@Builder
+class RequestedMessage {
+    private final Long orderid;
+    private final List<MessageItem> items;
 }

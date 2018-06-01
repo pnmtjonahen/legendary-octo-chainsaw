@@ -1,4 +1,4 @@
-package nl.tjonahen.resto;
+package nl.tjonahen.resto.diner.order.status;
 
 import brave.Span;
 import brave.Tracer;
@@ -20,14 +20,15 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 /**
- * OrderStatusBroker is a WebSocket that allows the server to push an order status update to the client. 
+ * OrderStatusBroker is a WebSocket that allows the server to push an order
+ * status update to the client.
  */
 @Slf4j
 @Service
-public class OrderStatusBroker implements WebSocketHandler {
+public class OrderStatusWebSocketHandler implements WebSocketHandler {
 
     private final Map<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();
-    
+
     /*
      * Tracer object to allow adding the websocket push to the current trace span. 
      * Programatically adding trace to sleuth/zipkin 
@@ -38,12 +39,13 @@ public class OrderStatusBroker implements WebSocketHandler {
     public void setTracer(Tracer tracer) {
         this.tracer = tracer;
     }
-   
-    
+
     /**
-     * Handle he websocket message, The frontend wil send the orderid to the websocket to indicate on what order it is waiting.
+     * Handle he websocket message, The frontend wil send the orderid to the
+     * websocket to indicate on what order it is waiting.
+     *
      * @param session -
-     * @param encodedMessage the message containing the order 
+     * @param encodedMessage the message containing the order
      * @throws Exception -
      */
     @Override
@@ -78,9 +80,10 @@ public class OrderStatusBroker implements WebSocketHandler {
     }
 
     /*
-    * Retryable method, it is posible that the order processing is faster then the browser is able to setup a WebSocket. So we retry the sendstatus a number of times.
-    */
-    @Retryable(backoff = @Backoff(delay=5000))
+    * Retryable method, it is posible that the order processing is faster then the browser is able to setup a WebSocket. 
+    * So we retry the sendstatus a number of times.
+     */
+    @Retryable(backoff = @Backoff(delay = 5000))
     public void sendStatus(Long id, String msg) throws IOException, OrderNotFoundException {
         if (sessions.containsKey(id)) {
             // create new span to trace websocket cal to client
@@ -98,5 +101,6 @@ public class OrderStatusBroker implements WebSocketHandler {
 @Getter
 @Setter
 class OrderId {
+
     private String orderid;
 }

@@ -1,5 +1,6 @@
-package nl.tjonahen.resto;
+package nl.tjonahen.resto.diner.order.status;
 
+import nl.tjonahen.resto.diner.order.status.OrderStatusWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -9,11 +10,11 @@ import org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator
 @Configuration
 public class DinerWebSocketConfigurer implements WebSocketConfigurer {
 
-    private OrderStatusBroker orderStatusBroker;
+    private OrderStatusWebSocketHandler orderStatusWebSocketHandler;
 
     @Autowired
-    public void setOrderStatusBroker(OrderStatusBroker orderStatusBroker) {
-        this.orderStatusBroker = orderStatusBroker;
+    public void setOrderStatusBroker(OrderStatusWebSocketHandler orderStatusWebSocketHandler) {
+        this.orderStatusWebSocketHandler = orderStatusWebSocketHandler;
     }
 
     /*
@@ -22,7 +23,7 @@ public class DinerWebSocketConfigurer implements WebSocketConfigurer {
      */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ExceptionWebSocketHandlerDecorator(orderStatusBroker), "/orderstatus").setAllowedOrigins("*");
+        registry.addHandler(new ExceptionWebSocketHandlerDecorator(orderStatusWebSocketHandler), "/orderstatus").setAllowedOrigins("*");
     }
 
 }

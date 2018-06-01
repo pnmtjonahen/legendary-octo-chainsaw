@@ -47,10 +47,8 @@ public class ChefService {
                     log.error("Interupted while preparing food: ", ex);
                 }
                 log.info("Dish {} is ready for service for order {}", dish.getId(), dishes.getOrderid());
-                restTemplate.postForLocation(String.format("%s/%d/serve/%d",dinerUrl, dishes.getOrderid(), dish.getId()), Void.class);
+                restTemplate.postForLocation(String.format("%s/api/order/%d/serve/%d",dinerUrl, dishes.getOrderid(), dish.getId()), Void.class);
             });
         }
-//        log.info("Food is ready for service for order {}", dishes.getOrderid());
-//        restTemplate.postForLocation(String.format("%s/%d/dishes",dinerUrl, dishes.getOrderid()), Void.class);
     }
 }

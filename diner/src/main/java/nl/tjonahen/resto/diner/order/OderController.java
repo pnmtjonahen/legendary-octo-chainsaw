@@ -2,12 +2,10 @@ package nl.tjonahen.resto.diner.order;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.OrderNotFoundException;
-import nl.tjonahen.resto.OrderStatusBroker;
+import nl.tjonahen.resto.diner.order.status.OrderNotFoundException;
+import nl.tjonahen.resto.diner.order.status.OrderStatusBroker;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
@@ -70,7 +68,7 @@ public class OderController {
         final Order order = orderRepository.getOne(id);
         try {
             log.info("Serving drinks for order {}", id);
-            orderStatusBroker.sendStatus(id, order.serveDrinks().name());
+            orderStatusBroker.sendStatusUpdate(id, order.serveDrinks().name());
             order.setStatus(OrderStatus.DRINK_SERVED);
             orderRepository.save(order);
         } catch (OrderNotFoundException ex) {
@@ -87,7 +85,7 @@ public class OderController {
         final Order order = orderRepository.getOne(id);
         try {
             log.info("Serving food for order {}", id);
-            orderStatusBroker.sendStatus(id, order.serveFood().name());
+            orderStatusBroker.sendStatusUpdate(id, order.serveFood().name());
             order.setStatus(OrderStatus.FOOD_SERVED);
         } catch (OrderNotFoundException ex) {
             log.error("Table for Order {} not found, food cannot be served", id);
@@ -107,7 +105,7 @@ public class OderController {
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DISH && !item.isPrepared()).count() ==0) {
                 log.info("Serving food for order {}", id);
-                orderStatusBroker.sendStatus(id, order.serveFood().name());
+                orderStatusBroker.sendStatusUpdate(id, order.serveFood().name());
                 order.setStatus(OrderStatus.FOOD_SERVED);
             }
         } catch (OrderNotFoundException ex) {
@@ -151,6 +149,7 @@ public class OderController {
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DRINK)
                 .collect(Collectors.toList()));
+        
         log.info("Accepted order {}", order.getId());
         UriComponents uriComponents = builder.path("/api/order/{id}/bill").buildAndExpand(order.getId());
         return new ResponseEntity<>(ResponseOrder.builder().ref(order.getId()).billUrl(uriComponents.toUri().toString()).build(), HttpStatus.ACCEPTED);
