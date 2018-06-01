@@ -3,9 +3,7 @@ package nl.tjonahen.resto.diner.order.status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.DinerApplication;
 import org.springframework.amqp.core.Message;
@@ -14,12 +12,23 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 /**
- * OrderStatusBroker is a amqp message broker that publishes and subscribes to status update messages
+ * OrderStatusBroker is a amqp message broker that publishes and subscribes to
+ * status update messages
  */
 @Slf4j
 @Service
 public class OrderStatusBroker {
 
+    /**
+     * The order status update message
+     */
+    @Data
+    @AllArgsConstructor
+    private static class OrderStatusMessage {
+        private Long id;
+        private String msg;
+    }
+    
     private final RabbitTemplate rabbitTemplate;
     private final OrderStatusWebSocketHandler orderStatusWebSocketHandler;
 
@@ -33,7 +42,7 @@ public class OrderStatusBroker {
                 new OrderStatusMessage(id, msg));
 
     }
-    
+
     @RabbitListener(queues = DinerApplication.DINER_QUEUE)
     public void receiveStatusUpdate(final Message message) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -45,16 +54,4 @@ public class OrderStatusBroker {
         }
     }
 
-}
-
-/**
- * The order status update message
- */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-class OrderStatusMessage {
-    private Long id;
-    private String msg;
 }

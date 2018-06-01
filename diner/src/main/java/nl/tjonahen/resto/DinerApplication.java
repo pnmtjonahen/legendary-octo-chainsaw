@@ -49,8 +49,8 @@ public class DinerApplication implements RabbitListenerConfigurer {
      * LoadBalanced RestTemplate this uses the EurekaClient for service discovery and Ribbon for loadbalancing 
      * 
      */
-    @LoadBalanced
     @Bean
+    @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }

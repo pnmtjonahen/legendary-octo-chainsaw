@@ -13,11 +13,11 @@ if (!String.prototype.format) {
 }
 
 const config = {
-    orderstatus:"ws://localhost:8080/orderstatus",
-    menu:"http://localhost:8080/api/menu",
-    bill:"http://localhost:8080/api/order/{0}/bill",
-    pay:"http://localhost:8080/api/order/{0}/pay",
-    ordersubmit:"http://localhost:8080/api/order/"
+    orderstatus:"ws://localhost:8083/orderstatus",
+    menu:"http://localhost:8083/api/menu",
+    bill:"http://localhost:8083/api/order/{0}/bill",
+    pay:"http://localhost:8083/api/order/{0}/pay",
+    ordersubmit:"http://localhost:8083/api/order/"
 };
 class OrderWebSocket {
     constructor(onmesg) {

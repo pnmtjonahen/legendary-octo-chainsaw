@@ -129,7 +129,7 @@
                         <profile>local</profile>
                     </profiles>
                     
-                    <fork>true</fork>
+                    <!--<fork>true</fork>-->
                 </configuration>
             </plugin>
             <plugin>

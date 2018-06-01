@@ -81,7 +81,8 @@ public class OrderService {
         return getResponse.getBody();
     }
 
-    public List<Dish> defaultDishes() {
+    public List<Dish> defaultDishes(Throwable t) {
+        log.warn("getDishes failed with ", t);
         return new ArrayList<>();
     }
 
@@ -93,7 +94,8 @@ public class OrderService {
         return getResponse.getBody();
     }
 
-    public List<Drink> defaultDrinks() {
+    public List<Drink> defaultDrinks(Throwable t) {
+        log.warn("getDrinks failed with ", t);
         return Arrays.asList(new Drink("water", "water", "complementary water", 0L));
     }
 

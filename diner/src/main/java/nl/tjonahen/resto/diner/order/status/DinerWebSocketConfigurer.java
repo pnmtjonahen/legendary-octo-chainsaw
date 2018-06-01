@@ -1,6 +1,5 @@
 package nl.tjonahen.resto.diner.order.status;
 
-import nl.tjonahen.resto.diner.order.status.OrderStatusWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
