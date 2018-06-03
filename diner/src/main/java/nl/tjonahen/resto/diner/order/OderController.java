@@ -10,7 +10,7 @@ import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import nl.tjonahen.resto.diner.order.model.OrderStatus;
-import nl.tjonahen.resto.diner.order.persistence.OrderRepository;
+import nl.tjonahen.resto.diner.persistence.OrderRepository;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +48,8 @@ public class OderController {
         return orderRepository.findAll();
     }
 
-    @GetMapping("/{id}/bill")
     @CrossOrigin
+    @GetMapping("/{id}/bill")
     public Bill getOrderBill(@PathVariable Long id) {
         Order order = orderRepository.getOne(id);
         List<BillItem> billItems = order.getOrderItems()
@@ -116,8 +116,8 @@ public class OderController {
         }
     }
 
-    @PostMapping("/{id}/pay")
     @CrossOrigin
+    @PostMapping("/{id}/pay")
     public void servePayOrder(@PathVariable Long id) {
         log.info("Order {} is payed", id);
     }

@@ -38,7 +38,7 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
-
+    
     private boolean hasDishes() {
         return orderItems.stream().filter(i -> i.getOrderItemType() == OrderItemType.DISH).count() > 0;
     }

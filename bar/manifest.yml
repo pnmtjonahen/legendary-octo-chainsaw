@@ -1,0 +1,11 @@
+---
+# comment in manifest
+applications:
+    - name : tjonahen-bartender
+      buildpack: java_buildpack
+      path: target/bartender.jar
+      services:
+        - myConfigServer
+        - myServiceRegistry
+        - myRabbitMQ
+        - metrics-forwarder

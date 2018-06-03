@@ -1,4 +1,4 @@
-package nl.tjonahen.resto.diner.order.persistence;
+package nl.tjonahen.resto.diner.persistence;
 
 import nl.tjonahen.resto.diner.order.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;

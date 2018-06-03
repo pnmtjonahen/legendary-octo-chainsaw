@@ -82,6 +82,9 @@ class IndexView {
                     break;
             }
         });
+        fetch(config.table).then(res => res.josn()).then(table => {
+            this.table_id = table.id;
+        });
         fetch(config.menu).then(res => res.json()).then(menu => {
             menu.dishes.forEach((d) => {
                 this.eatContainer.appendChild(this.newH5(d.name));
