@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class BartenderController {
     
     private final BartenderService bartenderService;

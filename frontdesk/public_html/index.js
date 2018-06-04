@@ -13,15 +13,17 @@ if (!String.prototype.format) {
 }
 
 const config = {
-    orderstatus:"ws://localhost:8083/orderstatus",
-    menu:"http://localhost:8083/api/menu",
-    bill:"http://localhost:8083/api/order/{0}/bill",
-    pay:"http://localhost:8083/api/order/{0}/pay",
-    ordersubmit:"http://localhost:8083/api/order/"
+    server:"localhost:8083",
+    orderstatus:"ws://{0}/orderstatus",
+    menu:"http://{0}/api/menu",
+    bill:"http://{0}/api/order/{1}/bill",
+    pay:"http://{0}/api/order/{1}/pay",
+    ordersubmit:"http://{0}/api/order",
+    table:"http://{0}/api/table/reserve"
 };
 class OrderWebSocket {
     constructor(onmesg) {
-        this.ws = new WebSocket(config.orderstatus);
+        this.ws = new WebSocket(config.orderstatus.format(config.server));
         this.ws.onopen = () => {
             console.log("Connection is open...");
         };
@@ -59,7 +61,7 @@ class IndexView {
             switch (status) {
                 case "BILLING":
                     this.clearStatusContainer();
-                    fetch(config.bill.format(this.orderInfo.ref)).then(res => res.json()).then(bill => {
+                    fetch(config.bill.format(config.server, this.orderInfo.ref)).then(res => res.json()).then(bill => {
                         const table = document.createElement("table");
                         table.className = "order-table";
                         bill.items.forEach((c) => {
@@ -82,10 +84,14 @@ class IndexView {
                     break;
             }
         });
-        fetch(config.table).then(res => res.josn()).then(table => {
+        fetch(config.table.format(config.server)).then(res => res.json()).then(table => {
             this.table_id = table.id;
         });
-        fetch(config.menu).then(res => res.json()).then(menu => {
+        fetch(config.menu.format(config.server)).then(res => { 
+            var xCsrfToken = res.headers.get("X-CSRF-TOKEN");
+            console.log(res.headers);
+            return res.json();
+        }).then(menu => {
             menu.dishes.forEach((d) => {
                 this.eatContainer.appendChild(this.newH5(d.name));
                 this.eatContainer.appendChild(this.newDescription(d));
@@ -133,7 +139,7 @@ class IndexView {
         button.type = "submit";
         button.onclick = (e) => {
 
-            fetch(config.pay.format(this.orderInfo.ref),
+            fetch(config.pay.format(config.server, this.orderInfo.ref),
                     {
                         headers: {
                             'Accept': 'application/json',
@@ -292,7 +298,7 @@ class IndexView {
             this.drinks.forEach((c) => {
                 order.push({"ref": c.d.ref, "quantity": c.count, "type": "DRINK"});
             });
-            fetch(config.ordersubmit,
+            fetch(config.ordersubmit.format(config.server),
                     {
                         headers: {
                             'Accept': 'application/json',

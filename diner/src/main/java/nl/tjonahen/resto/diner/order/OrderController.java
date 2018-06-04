@@ -30,14 +30,14 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Slf4j
 @RestController
-@RequestMapping("api/order")
-public class OderController {
+@RequestMapping("/api/order")
+public class OrderController {
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
     private final OrderStatusBroker orderStatusBroker;
 
-    public OderController(OrderRepository orderRepository, OrderService orderService, OrderStatusBroker orderStatusBroker) {
+    public OrderController(OrderRepository orderRepository, OrderService orderService, OrderStatusBroker orderStatusBroker) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.orderStatusBroker = orderStatusBroker;

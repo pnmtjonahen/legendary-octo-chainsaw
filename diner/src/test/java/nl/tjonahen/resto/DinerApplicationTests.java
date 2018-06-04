@@ -35,12 +35,12 @@ public class DinerApplicationTests {
     public void testGetMenu() throws Exception {
 
         WireMock wireMock = new WireMock(19888);
-        wireMock.register(get(urlEqualTo("/chef/menu"))
+        wireMock.register(get(urlEqualTo("/chef/api/menu"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody("[]")));
-        wireMock.register(get(urlEqualTo("/bartender/menu"))
+        wireMock.register(get(urlEqualTo("/bartender/api/menu"))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")

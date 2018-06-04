@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Philippe Tjon - A - Hen
  */
 @RestController
-@RequestMapping("")
+@RequestMapping("/api")
 public class ChefController {
 
     private final ChefService chefService;

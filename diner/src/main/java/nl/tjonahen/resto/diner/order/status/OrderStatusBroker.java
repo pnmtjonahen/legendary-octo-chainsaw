@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.DinerApplication;
 import org.springframework.amqp.core.Message;
@@ -22,7 +25,9 @@ public class OrderStatusBroker {
     /**
      * The order status update message
      */
-    @Data
+    @Getter
+    @Setter
+    @NoArgsConstructor 
     @AllArgsConstructor
     private static class OrderStatusMessage {
         private Long id;
