@@ -1,29 +1,62 @@
 /* global fetch */
 
 if (!String.prototype.format) {
-  String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-      return typeof args[number] != 'undefined'
-        ? args[number]
-        : match
-      ;
-    });
-  };
+    String.prototype.format = function () {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+        });
+    };
 }
 
-const config = {
-    server:"localhost:8083",
-    orderstatus:"ws://{0}/orderstatus",
-    menu:"http://{0}/api/menu",
-    bill:"http://{0}/api/order/{1}/bill",
-    pay:"http://{0}/api/order/{1}/pay",
-    ordersubmit:"http://{0}/api/order",
-    table:"http://{0}/api/table/reserve"
+const config_local = {
+    http_server: "http://localhost:8083",
+    ws_server: "ws://localhost:8083"
 };
+const config_cloudfoundry = {
+    http_server: "https://tjonahen-diner.cfapps.io",
+    ws_server: "wss://tjonahen-diner.cfapps.io:4443"
+};
+
+class Config {
+    orderstatus = "{0}/orderstatus";
+    menu = "{0}/api/menu";
+    bill = "{0}/api/order/{1}/bill";
+    pay = "{0}/api/order/{1}/pay";
+    ordersubmit = "{0}/api/order";
+    table = "{0}/api/table/reserve";
+
+    constructor() {
+        this.config = config_local;
+    }
+    orderstatus() {
+        return this.orderstatus.format(this.config.ws_server);
+    }
+    bill(ref) {
+        return this.bill.format(this.config.http_server, ref);
+    }
+    table() {
+        return this.table.format(this.config.http_server);
+    }
+    menu() {
+        return this.menu.format(this.config.http_server);
+    }
+    pay(ref) {
+        return this.pay.format(this.config.http_server, ref);
+    }
+    ordersubmit() {
+        return this.ordersubmit.format(this.config.http_server);
+    }
+}
+
+const config = new Config();
+
 class OrderWebSocket {
     constructor(onmesg) {
-        this.ws = new WebSocket(config.orderstatus.format(config.server));
+        this.ws = new WebSocket(config.orderstatus());
         this.ws.onopen = () => {
             console.log("Connection is open...");
         };
@@ -61,7 +94,7 @@ class IndexView {
             switch (status) {
                 case "BILLING":
                     this.clearStatusContainer();
-                    fetch(config.bill.format(config.server, this.orderInfo.ref)).then(res => res.json()).then(bill => {
+                    fetch(config.bill(this.orderInfo.ref)).then(res => res.json()).then(bill => {
                         const table = document.createElement("table");
                         table.className = "order-table";
                         bill.items.forEach((c) => {
@@ -84,10 +117,10 @@ class IndexView {
                     break;
             }
         });
-        fetch(config.table.format(config.server)).then(res => res.json()).then(table => {
+        fetch(config.table()).then(res => res.json()).then(table => {
             this.table_id = table.id;
         });
-        fetch(config.menu.format(config.server)).then(res => { 
+        fetch(config.menu()).then(res => {
             var xCsrfToken = res.headers.get("X-CSRF-TOKEN");
             console.log(res.headers);
             return res.json();
@@ -139,7 +172,7 @@ class IndexView {
         button.type = "submit";
         button.onclick = (e) => {
 
-            fetch(config.pay.format(config.server, this.orderInfo.ref),
+            fetch(config.pay(this.orderInfo.ref),
                     {
                         headers: {
                             'Accept': 'application/json',
@@ -151,7 +184,7 @@ class IndexView {
                         document.getElementById('orderstatus').style.display = 'none';
                         this.clearStatusContainer();
                         document.getElementById('thankyou').style.display = 'block';
-                        setTimeout(function(){
+                        setTimeout(function () {
                             document.getElementById('thankyou').style.display = 'none';
                         }, 2000);
                     })
@@ -298,7 +331,7 @@ class IndexView {
             this.drinks.forEach((c) => {
                 order.push({"ref": c.d.ref, "quantity": c.count, "type": "DRINK"});
             });
-            fetch(config.ordersubmit.format(config.server),
+            fetch(config.ordersubmit(),
                     {
                         headers: {
                             'Accept': 'application/json',
@@ -328,7 +361,7 @@ class IndexView {
         p.appendChild(button);
         return p;
     }
-    
+
     newSpinner() {
         const p = document.createElement("div");
         p.className = "loader";
