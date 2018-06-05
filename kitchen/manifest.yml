@@ -2,6 +2,7 @@
 # comment in manifest
 applications:
     - name : tjonahen-chef
+      no-route: true    
       buildpack: java_buildpack
       path: target/chef.jar
       services:

@@ -21,42 +21,47 @@ const config_cloudfoundry = {
     ws_server: "wss://tjonahen-diner.cfapps.io:4443"
 };
 
-class Config {
-    orderstatus = "{0}/orderstatus";
-    menu = "{0}/api/menu";
-    bill = "{0}/api/order/{1}/bill";
-    pay = "{0}/api/order/{1}/pay";
-    ordersubmit = "{0}/api/order";
-    table = "{0}/api/table/reserve";
-
+class Configuration {
     constructor() {
-        this.config = config_local;
+        this.cnf = config_local;
+        this.orderstatusUrl = "{0}/orderstatus";
+        this.menuUrl = "{0}/api/menu";
+        this.billUlr = "{0}/api/order/{1}/bill";
+        this.payUrl = "{0}/api/order/{1}/pay";
+        this.ordersubmitUrl = "{0}/api/order";
+        this.tableUrl = "{0}/api/table/reserve";
     }
+    
     orderstatus() {
-        return this.orderstatus.format(this.config.ws_server);
+        return this.orderstatusUrl.format(this.cnf.ws_server);
     }
+    
     bill(ref) {
-        return this.bill.format(this.config.http_server, ref);
+        return this.billUrl.format(this.cnf.http_server, ref);
     }
+    
     table() {
-        return this.table.format(this.config.http_server);
+        return this.tableUrl.format(this.cnf.http_server);
     }
+    
     menu() {
-        return this.menu.format(this.config.http_server);
+        return this.menuUrl.format(this.cnf.http_server);
     }
+    
     pay(ref) {
-        return this.pay.format(this.config.http_server, ref);
+        return this.payUrl.format(this.cnf.http_server, ref);
     }
+    
     ordersubmit() {
-        return this.ordersubmit.format(this.config.http_server);
+        return this.ordersubmitUrl.format(this.cnf.http_server);
     }
 }
 
-const config = new Config();
+const configuration = new Configuration();
 
 class OrderWebSocket {
     constructor(onmesg) {
-        this.ws = new WebSocket(config.orderstatus());
+        this.ws = new WebSocket(configuration.orderstatus());
         this.ws.onopen = () => {
             console.log("Connection is open...");
         };
@@ -83,6 +88,7 @@ class IndexView {
         this.dishes = [];
         this.orderInfo = undefined;
         this.served = false;
+        
     }
 
     init() {
@@ -94,7 +100,7 @@ class IndexView {
             switch (status) {
                 case "BILLING":
                     this.clearStatusContainer();
-                    fetch(config.bill(this.orderInfo.ref)).then(res => res.json()).then(bill => {
+                    fetch(configuration.bill(this.orderInfo.ref)).then(res => res.json()).then(bill => {
                         const table = document.createElement("table");
                         table.className = "order-table";
                         bill.items.forEach((c) => {
@@ -117,12 +123,11 @@ class IndexView {
                     break;
             }
         });
-        fetch(config.table()).then(res => res.json()).then(table => {
+        fetch(configuration.table()).then(res => res.json()).then(table => {
             this.table_id = table.id;
         });
-        fetch(config.menu()).then(res => {
-            var xCsrfToken = res.headers.get("X-CSRF-TOKEN");
-            console.log(res.headers);
+        fetch(configuration.menu()).then(res => {
+            res.headers.forEach(h=> console.log(h));
             return res.json();
         }).then(menu => {
             menu.dishes.forEach((d) => {
@@ -136,6 +141,12 @@ class IndexView {
                 this.drinksContainer.appendChild(this.newDescription(d));
                 this.drinksContainer.appendChild(this.anchorddToDrinkCart(d));
             });
+            if (menu.dishes.length > 0) {
+                document.getElementById('food_btn').removeAttribute("disabled");
+            }
+            if (menu.drinks.length > 0) {
+                document.getElementById('drink_btn').removeAttribute("disabled");
+            }
         }
         );
 
@@ -172,7 +183,7 @@ class IndexView {
         button.type = "submit";
         button.onclick = (e) => {
 
-            fetch(config.pay(this.orderInfo.ref),
+            fetch(configuration.pay(this.orderInfo.ref),
                     {
                         headers: {
                             'Accept': 'application/json',
@@ -232,6 +243,7 @@ class IndexView {
             } else {
                 this.dishes.push({'d': d, 'count': 1});
             }
+            document.getElementById('order_btn').removeAttribute("disabled");
         };
         const it = document.createElement("i");
         it.className = "w3-ripple w3-xxlarge fa fa-cart-plus";
@@ -252,6 +264,7 @@ class IndexView {
             } else {
                 this.drinks.push({'d': d, 'count': 1});
             }
+            document.getElementById('order_btn').removeAttribute("disabled");
         };
         const it = document.createElement("i");
         it.className = "w3-ripple w3-xxlarge fa fa-cart-plus";
@@ -268,7 +281,7 @@ class IndexView {
                     return cc.d.ref !== c.d.ref;
                 });
             }
-            this.fillBasket();
+            this.fillOrderContainer();
         };
         a.appendChild(document.createTextNode(c.count + " : "));
         const it = document.createElement("i");
@@ -286,7 +299,7 @@ class IndexView {
                     return cc.d.ref !== c.d.ref;
                 });
             }
-            this.fillBasket();
+            this.fillOrderContainer();
         };
         a.appendChild(document.createTextNode(c.count + " : "));
         const it = document.createElement("i");
@@ -295,7 +308,7 @@ class IndexView {
         return a;
     }
 
-    fillBasket() {
+    fillOrderContainer() {
         this.clearOrderContainer();
         if (this.dishes.length > 0 || this.drinks.length > 0) {
             const table = document.createElement("table");
@@ -314,6 +327,7 @@ class IndexView {
             this.orderContainer.appendChild(table);
             this.orderContainer.appendChild(this.sendOrderButton());
         } else {
+            document.getElementById('order_btn').setAttribute("disabled", "disabled");
             this.orderContainer.appendChild(this.newH5("Cart is empty. Add food or dinks to the card.."));
         }
     }
@@ -331,7 +345,7 @@ class IndexView {
             this.drinks.forEach((c) => {
                 order.push({"ref": c.d.ref, "quantity": c.count, "type": "DRINK"});
             });
-            fetch(config.ordersubmit(),
+            fetch(configuration.ordersubmit(),
                     {
                         headers: {
                             'Accept': 'application/json',
@@ -348,6 +362,7 @@ class IndexView {
                         this.dishes = [];
                         this.drinks = [];
                         document.getElementById('orderstatus').style.display = 'block';
+                        document.getElementById('order_btn').setAttribute("disabled", "disabled");
                         this.clearStatusContainer();
                         this.statusContainer.appendChild(this.newSpinner());
                         this.ws.sendOrderId(orderinfo.ref);
@@ -388,7 +403,7 @@ class IndexView {
 
     }
     openCart() {
-        this.fillBasket();
+        this.fillOrderContainer();
         document.getElementById('order').style.display = 'block';
     }
     closeCart() {
