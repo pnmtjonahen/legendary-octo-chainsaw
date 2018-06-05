@@ -23,10 +23,10 @@ const config_cloudfoundry = {
 
 class Configuration {
     constructor() {
-        this.cnf = config_local;
+        this.cnf = config_cloudfoundry;
         this.orderstatusUrl = "{0}/orderstatus";
         this.menuUrl = "{0}/api/menu";
-        this.billUlr = "{0}/api/order/{1}/bill";
+        this.billUrl = "{0}/api/order/{1}/bill";
         this.payUrl = "{0}/api/order/{1}/pay";
         this.ordersubmitUrl = "{0}/api/order";
         this.tableUrl = "{0}/api/table/reserve";
