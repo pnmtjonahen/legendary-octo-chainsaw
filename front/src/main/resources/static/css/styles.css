@@ -1,0 +1,73 @@
+/* 
+    Created on : Feb 7, 2018, 6:24:30 PM
+    Author     : Philippe Tjon - A - Hen philippe@tjonahen.nl
+*/
+
+body,h1,h5 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+    background-image: url('../w3images/onepage_restaurant.jpg');
+    min-height: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
+.addToBasket {
+    right: 0;
+    cursor: pointer;
+    position: absolute;
+    width: auto;
+    /*padding: 0px 10px;*/
+    margin-top: -75px;
+    margin-right: 10px;
+    color: black;
+    /*font-weight: bold;*/
+    /*font-size: 20px;*/
+    transition: 0.6s ease;    
+    /*border-radius: 0 3px 3px 0;*/
+    user-select: none;
+    -webkit-user-select: none;
+    
+    background-color: white; 
+    border: none;
+    border-color: white;
+}
+
+.order-table {
+    width:100%;
+}
+
+.first-cell {
+    width:75%;
+}
+
+.second-cell {
+    text-align: right;
+}
+
+.third-cell {
+    text-align: right;
+}
+
+.loader {
+    border: 6px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 6px solid #000000;
+    width: 60px;
+    height: 60px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    display: table;
+    margin: 0 auto;    
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}   

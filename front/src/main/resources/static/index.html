@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <title>DINER</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    
+    <style>
+     
+    </style>
+    <body>
+        <div class="bgimg w3-display-container w3-text-white">
+            <div class="w3-display-middle w3-jumbo">
+                <p>Food! Drinks!</p>
+            </div>
+            <div class="w3-display-topleft w3-container w3-xlarge">
+                <p><button id="food_btn" disabled onclick="document.getElementById('food').style.display = 'block'" class="w3-button w3-black">food</button></p>
+                <p><button id="drink_btn" disabled onclick="document.getElementById('drink').style.display = 'block'" class="w3-button w3-black">beverages</button></p>
+                <p><button id="order_btn" disabled onclick="view.openCart();" class="w3-button w3-black">order</button></p>
+            </div>
+            <div class="w3-display-bottomleft w3-container">
+                <p class="w3-xlarge">monday - friday 10-23 | saturday 14-02</p>
+                <p class="w3-large">Gammelkaia, Longyearbyen</p>
+                <p>powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+            </div>
+        </div>
+
+        <!-- food Menu Modal -->
+        <div id="food" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black w3-display-container">
+                    <span onclick="document.getElementById('food').style.display = 'none'" class="w3-button w3-display-topright w3-xxlarge fa fa-close"></span>
+                    <h1>Food</h1>
+                </div>
+                <div class="w3-container" id="Eat">
+                </div>
+            </div>
+        </div>
+        <!-- drink Menu Modal -->
+        <div id="drink" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black w3-display-container">
+                    <span onclick="document.getElementById('drink').style.display = 'none'" class="w3-button w3-display-topright w3-xxlarge fa fa-close"></span>
+                    <h1>Beverages</h1>
+                </div>
+                <div class="w3-container" id="Drinks">
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Modal -->
+        <div id="order" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black">
+                    <span onclick="view.closeCart()" class="w3-button w3-display-topright w3-xxlarge fa fa-close"></span>
+                    <h1>Order</h1>
+                </div>
+                <div class="w3-container" id="Basket">
+                </div>
+            </div>
+        </div>
+        <!-- Status Modal -->
+        <div id="orderstatus" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container w3-black">
+                    <span onclick="document.getElementById('orderstatus').style.display = 'none'" class="w3-button w3-display-topright w3-xxlarge fa fa-close"></span>
+                    <h1>Order Status</h1>
+                </div>
+                <div class="w3-container" id="Status">                    
+                </div>
+            </div>
+        </div>
+        <!-- Alert Modal -->
+        <div id="thankyou" class="w3-modal">
+            <div class="w3-modal-content w3-animate-zoom">
+                <div class="w3-container">
+                    <h5>Thank you!</h5>                    
+                </div>
+            </div>
+        </div>
+        <script src="configuration.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
+
