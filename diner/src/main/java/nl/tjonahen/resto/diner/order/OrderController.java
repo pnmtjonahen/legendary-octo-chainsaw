@@ -3,6 +3,7 @@ package nl.tjonahen.resto.diner.order;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.diner.order.status.OrderNotFoundException;
 import nl.tjonahen.resto.diner.order.status.OrderStatusBroker;
@@ -124,6 +125,7 @@ public class OrderController {
 
     @CrossOrigin
     @PostMapping
+    @Transactional
     public ResponseEntity<ResponseOrder> placeOrder(@RequestBody
             final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {

@@ -1,12 +1,11 @@
 ---
-# comment in manifest
 applications:
     - name : tjonahen-diner
       buildpack: java_buildpack
       path: target/diner.jar
       services:
         - myMysqlDB
-        - myCircuitBreakers
+        - myCircuitBreaker
         - myConfigServer
         - myServiceRegistry
         - myRabbitMQ

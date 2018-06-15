@@ -1,0 +1,4 @@
+---
+applications:
+    - name : tjonahen-frontdesk
+      buildpack: staticfile_buildpack

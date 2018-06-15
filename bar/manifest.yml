@@ -1,5 +1,4 @@
 ---
-# comment in manifest
 applications:
     - name : tjonahen-bartender
       buildpack: java_buildpack

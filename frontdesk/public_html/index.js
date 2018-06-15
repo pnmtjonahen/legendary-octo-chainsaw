@@ -1,29 +1,20 @@
 /* global fetch */
+/* global config */
+/*jshint esversion: 6 */
 
 if (!String.prototype.format) {
     String.prototype.format = function () {
         var args = arguments;
         return this.replace(/{(\d+)}/g, function (match, number) {
-            return typeof args[number] != 'undefined'
-                    ? args[number]
-                    : match
-                    ;
+            return typeof args[number] != 'undefined' ? args[number] : match;
         });
     };
 }
 
-const config_local = {
-    http_server: "http://localhost:8083",
-    ws_server: "ws://localhost:8083"
-};
-const config_cloudfoundry = {
-    http_server: "https://tjonahen-diner.cfapps.io",
-    ws_server: "wss://tjonahen-diner.cfapps.io:4443"
-};
 
 class Configuration {
     constructor() {
-        this.cnf = config_cloudfoundry;
+        this.cnf = config;
         this.orderstatusUrl = "{0}/orderstatus";
         this.menuUrl = "{0}/api/menu";
         this.billUrl = "{0}/api/order/{1}/bill";
@@ -31,27 +22,27 @@ class Configuration {
         this.ordersubmitUrl = "{0}/api/order";
         this.tableUrl = "{0}/api/table/reserve";
     }
-    
+
     orderstatus() {
         return this.orderstatusUrl.format(this.cnf.ws_server);
     }
-    
+
     bill(ref) {
         return this.billUrl.format(this.cnf.http_server, ref);
     }
-    
+
     table() {
         return this.tableUrl.format(this.cnf.http_server);
     }
-    
+
     menu() {
         return this.menuUrl.format(this.cnf.http_server);
     }
-    
+
     pay(ref) {
         return this.payUrl.format(this.cnf.http_server, ref);
     }
-    
+
     ordersubmit() {
         return this.ordersubmitUrl.format(this.cnf.http_server);
     }
@@ -88,7 +79,7 @@ class IndexView {
         this.dishes = [];
         this.orderInfo = undefined;
         this.served = false;
-        
+
     }
 
     init() {
@@ -126,10 +117,7 @@ class IndexView {
         fetch(configuration.table()).then(res => res.json()).then(table => {
             this.table_id = table.id;
         });
-        fetch(configuration.menu()).then(res => {
-            res.headers.forEach(h=> console.log(h));
-            return res.json();
-        }).then(menu => {
+        fetch(configuration.menu()).then(res => res.json()).then(menu => {
             menu.dishes.forEach((d) => {
                 this.eatContainer.appendChild(this.newH5(d.name));
                 this.eatContainer.appendChild(this.newDescription(d));
@@ -148,7 +136,9 @@ class IndexView {
                 document.getElementById('drink_btn').removeAttribute("disabled");
             }
         }
-        );
+        ).catch(error => {
+            console.log(error);
+        });
 
     }
 

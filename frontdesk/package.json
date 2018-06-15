@@ -4,5 +4,10 @@
     "keywords": ["util", "functional", "server", "client", "browser"],
     "author": "Philippe Tjon - A - Hen philippe@tjonahen.nl",
     "contributors": [],
-    "dependencies": {}
+    "dependencies": {},
+     "scripts": {
+        "test": "jshint ./public_html || true",
+        "local": "cp ./public_html/configuration_local.js ./public_html/configuration.js",
+        "pws": "cp ./public_html/configuration_pws.js ./public_html/configuration.js"
+    }
 }
