@@ -1,0 +1,7 @@
+---
+applications:
+    - name : tjonahen-front
+      buildpack: java_buildpack
+      path: target/front.jar
+      services:
+        - myConfigServer
