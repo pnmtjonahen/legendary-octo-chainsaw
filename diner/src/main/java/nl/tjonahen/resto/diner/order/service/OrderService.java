@@ -45,6 +45,7 @@ public class OrderService {
     }
 
     @Async
+    @HystrixCommand
     public void processDrinks(Long orderid, List<OrderItem> drinks) {
         if (drinks.isEmpty()) {
             return;
@@ -58,6 +59,7 @@ public class OrderService {
     }
 
     @Async
+    @HystrixCommand
     public void processDishes(Long orderid, List<OrderItem> dishes) {
         if (dishes.isEmpty()) {
             return;
@@ -99,6 +101,7 @@ public class OrderService {
         return Arrays.asList(new Drink("water", "water", "complementary water", 0L));
     }
 
+    @HystrixCommand
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
             final Dish dish = restTemplate.getForObject(cherUrl + "/api/dish/" + item.getRef(), Dish.class);
@@ -108,6 +111,7 @@ public class OrderService {
         return drink == null ? 0L : drink.getPrice();
     }
 
+    @HystrixCommand
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
             final Dish dish = restTemplate.getForObject(cherUrl + "/api/dish/" + item.getRef(), Dish.class);

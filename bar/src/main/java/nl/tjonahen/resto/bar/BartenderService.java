@@ -1,13 +1,10 @@
 package nl.tjonahen.resto.bar;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.BartenderApplication;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -40,22 +37,9 @@ public class BartenderService {
         return DRINKS;
     }
 
-    @RabbitListener(queues = BartenderApplication.BARTENDER_QUEUE)
-    public void receiveDrink(final Message message) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        CouponMessage drinks = objectMapper.readValue(message.getBody(), CouponMessage.class);
-        log.info("Prepare drinks for order {}", drinks.getOrderid());
-
-        for (Coupon drink : drinks.getItems()) {
-            DRINKS.stream().filter(d -> d.getRef().equals(drink.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
-                try {
-                    Thread.sleep(d*100*drink.getQuantity());
-                } catch (InterruptedException ex) {
-                    log.error("Interupted while making beverage: ", ex);
-                }
-            });
-        }
-        log.info("Drinks are ready for service for order {}", drinks.getOrderid());
-        restTemplate.postForLocation(String.format("%s/api/order/%d/serve/drinks",dinerUrl, drinks.getOrderid()), Void.class);
+    @HystrixCommand
+    public void serveDrink(final Long orderId) {
+        log.info("Drinks are ready for service for order {}", orderId);
+        restTemplate.postForLocation(String.format("%s/api/order/%d/serve/drinks",dinerUrl, orderId), Void.class);
     }
 }
