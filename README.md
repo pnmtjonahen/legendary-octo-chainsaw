@@ -15,7 +15,7 @@ It uses the diner to get the menu, place orders, get order status updates and pa
 This microservices is implements the services that the frontend needs. It uses the chef and bartender microservices to do the actual work of preparing the food and mixing the drink.
 
 ### chef
-The chef microservice is responsible for preparing the food. 
+The chef microservice is responsible for preparing the food.
 
 ### bartender
 The bartender microservice is responsible for mixing drinks.
@@ -24,9 +24,37 @@ The bartender microservice is responsible for mixing drinks.
 - REST endpoints: All services for getting the menu and posting new orders by the frontdesk are REST endpoints.
 - Diner -> Bartender and Diner -> Chef for getting the menu are done with REST endpoints.
 - WebSocket: frontdesk opens a websocket to get status updates on submitted order. Diner sends (pushes) status updates to the frontdesk via this websocket.
-- AMQP (rabbitmq): When submitting new drink order to the bartender AMQP is used. 
+- AMQP (rabbitmq): When submitting new drink order to the bartender AMQP is used.
 - @Async methods
 - Config server
 - Zipkin server / sleuth for tracing
 - Eureka Server / Eureka client / Ribbon @LoadBalanced RestTemplates
 - JPA repository for database access
+
+# Running
+1. clone and change if needed the configuration https://github.com/pnmtjonahen/config
+
+ A config server will be configured to use these configuration files. See spring boot config from github repo.
+1. start the services from https://github.com/pnmtjonahen/literate-octo-bassoon
+
+ See the README for starting up all supporting services. Config, Eureka, RabbitMQ, Zipkin, SpringAdmin, Turbine/Hystrix and HystrixDashboard
+
+1. Start the microservices.
+
+ goto the bar subfolder and run
+```bash
+mvn spring-boot:run -Dserver.port=8081
+```
+goto the kitchen subfolder and run
+```bash
+mvn spring-boot:run -Dserver.port=8082
+```
+goto the diner subfolder and run
+```bash
+mvn spring-boot:run -Dserver.port=8083
+```
+goto the front subfolder and run
+```bash
+mvn spring-boot:run
+```
+The frontend will be running on http://localhost:8080
