@@ -2,6 +2,7 @@ package nl.tjonahen.resto.diner.menu;
 
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import nl.tjonahen.resto.logging.Logged;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class MenuController {
      */
     @CrossOrigin
     @GetMapping
+    @Logged
     public Menu getMenu() {
         log.info("Getting Menu");
         return Menu.builder()
