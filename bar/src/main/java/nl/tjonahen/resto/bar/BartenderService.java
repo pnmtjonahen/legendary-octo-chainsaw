@@ -1,7 +1,6 @@
 package nl.tjonahen.resto.bar;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
