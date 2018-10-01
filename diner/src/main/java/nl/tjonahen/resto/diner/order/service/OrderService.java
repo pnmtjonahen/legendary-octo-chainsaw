@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.DinerApplication;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
@@ -28,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
     @Value("${chef.url}")
@@ -38,11 +40,6 @@ public class OrderService {
     private final RestTemplate restTemplate;
 
     private final RabbitTemplate rabbitTemplate;
-
-    public OrderService(RestTemplate restTemplate, RabbitTemplate rabbitTemplate) {
-        this.restTemplate = restTemplate;
-        this.rabbitTemplate = rabbitTemplate;
-    }
 
     @Async
     @HystrixCommand
