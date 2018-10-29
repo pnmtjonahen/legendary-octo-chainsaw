@@ -22,6 +22,7 @@ import org.springframework.messaging.handler.annotation.support.DefaultMessageHa
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 @SpringBootApplication
@@ -55,6 +56,11 @@ public class DinerApplication implements RabbitListenerConfigurer {
         return new RestTemplate();
     }
 
+    @Bean
+    @LoadBalanced
+    public WebClient.Builder loadBalancedWebClientBuilder() {
+        return WebClient.builder();
+    }
 
     /*
      * The Queue binding 
@@ -84,7 +90,7 @@ public class DinerApplication implements RabbitListenerConfigurer {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
         factory.setMessageConverter(new MappingJackson2MessageConverter());
         registrar.setMessageHandlerMethodFactory(factory);
-    }    
+    }
 
     /*
      * The rabbit template, uses a jackson2json message converter to seamingless conver to and from json.

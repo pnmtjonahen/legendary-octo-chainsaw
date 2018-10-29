@@ -2,13 +2,14 @@ package nl.tjonahen.resto.diner.menu;
 
 import java.util.ArrayList;
 import nl.tjonahen.resto.diner.order.service.OrderService;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.core.publisher.Flux;
 
 /**
  *
@@ -25,13 +26,12 @@ public class MenuControllerTest {
     
     @Test
     public void testGetMenu() throws Exception {
-        when(orderService.getDishes()).thenReturn(new ArrayList<>());
-        when(orderService.getDrinks()).thenReturn(new ArrayList<>());
+        when(orderService.getDishes()).thenReturn(Flux.fromIterable(new ArrayList<>()));
+        when(orderService.getDrinks()).thenReturn(Flux.fromIterable(new ArrayList<>()));
         
-        Menu menu = menuController.getMenu();
+        var menu = menuController.getMenu();
         
-        assertTrue(menu.getDishes().isEmpty());
-        assertTrue(menu.getDrinks().isEmpty());
+        assertNotNull(menu);
     }
 
 }

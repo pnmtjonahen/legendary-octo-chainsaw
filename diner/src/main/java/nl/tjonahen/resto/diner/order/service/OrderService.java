@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 /**
  *
@@ -40,6 +42,8 @@ public class OrderService {
     private final RestTemplate restTemplate;
 
     private final RabbitTemplate rabbitTemplate;
+    
+    private final WebClient.Builder webClientBuilder;
 
     @Async
     @HystrixCommand
@@ -73,29 +77,26 @@ public class OrderService {
 
     @HystrixCommand(fallbackMethod = "defaultDishes", commandProperties = {
         @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")})
-    public List<Dish> getDishes() {
+    public Flux<Dish> getDishes() {
         ResponseEntity<List<Dish>> getResponse
                 = restTemplate.exchange(cherUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
                 });
-        return getResponse.getBody();
+        return Flux.fromStream(getResponse.getBody().stream());
     }
 
-    public List<Dish> defaultDishes(Throwable t) {
+    public Flux<Dish> defaultDishes(Throwable t) {
         log.warn("getDishes failed with ", t);
-        return new ArrayList<>();
+        return Flux.empty();
     }
 
     @HystrixCommand(fallbackMethod = "defaultDrinks")
-    public List<Drink> getDrinks() {
-        ResponseEntity<List<Drink>> getResponse
-                = restTemplate.exchange(bartenderUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Drink>>() {
-                });
-        return getResponse.getBody();
+    public Flux<Drink> getDrinks() {
+        return webClientBuilder.build().get().uri(bartenderUrl + "/api/menu").retrieve().bodyToFlux(Drink.class);
     }
 
-    public List<Drink> defaultDrinks(Throwable t) {
+    public Flux<Drink> defaultDrinks(Throwable t) {
         log.warn("getDrinks failed with ", t);
-        return Arrays.asList(new Drink("water", "water", "complementary water", 0L));
+        return Flux.fromIterable(Arrays.asList(new Drink("water", "water", "complementary water", 0L)));
     }
 
     @HystrixCommand

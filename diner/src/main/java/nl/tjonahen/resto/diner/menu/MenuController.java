@@ -4,10 +4,12 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.logging.Logged;
 import nl.tjonahen.resto.diner.order.service.OrderService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 /**
  *
@@ -29,29 +31,27 @@ public class MenuController {
     * @CrossOrigin as the frontdesk has a different domain then this service
      */
     @CrossOrigin
-    @GetMapping
+    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Logged
-    public Menu getMenu() {
+    public Flux<MenuItem> getMenu() {
         log.info("Getting Menu");
-        return Menu.builder()
-                .dishes(orderService.getDishes()
-                        .stream()
+        return Flux.concat(
+                orderService.getDishes()
                         .map(d -> MenuItem.builder()
-                                .ref(d.getRef())
-                                .name(d.getName())
-                                .description(d.getDescription())
-                                .price(d.getPrice())
-                                .build())
-                        .collect(Collectors.toList()))
-                .drinks(orderService.getDrinks()
-                        .stream()
+                        .ref(d.getRef())
+                        .name(d.getName())
+                        .description(d.getDescription())
+                        .price(d.getPrice())
+                        .type(MenuItem.Type.DISH)
+                        .build()),
+                orderService.getDrinks()
                         .map(d -> MenuItem.builder()
-                                .ref(d.getRef())
-                                .name(d.getName())
-                                .description(d.getDescription())
-                                .price(d.getPrice())
-                                .build())
-                        .collect(Collectors.toList())).build();
+                        .ref(d.getRef())
+                        .name(d.getName())
+                        .description(d.getDescription())
+                        .price(d.getPrice())
+                        .type(MenuItem.Type.DRINK)
+                        .build()));
 
     }
 

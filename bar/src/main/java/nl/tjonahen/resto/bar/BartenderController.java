@@ -1,11 +1,12 @@
 package nl.tjonahen.resto.bar;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import java.util.List;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 /**
  *
@@ -26,10 +27,10 @@ public class BartenderController {
      * Get all the drinks the bartender can make.
      * @return a list of drinks.
      */
-    @GetMapping("/menu")
+    @GetMapping(path = "/menu", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @JsonView(PublicView.class)
-    public List<Drink> getAllDrinks() {
-        return bartenderService.getAllDrinks();
+    public Flux<Drink> getAllDrinks() {
+        return Flux.fromIterable(bartenderService.getAllDrinks());
     }
     
     /**

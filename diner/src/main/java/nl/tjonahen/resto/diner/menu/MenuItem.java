@@ -10,6 +10,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MenuItem {
+    public static enum Type {DISH, DRINK};
+    private final Type type;
     private final String ref;
     private final String name;
     private final String description;

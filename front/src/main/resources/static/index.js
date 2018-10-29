@@ -79,7 +79,7 @@ class IndexView {
         this.dishes = [];
         this.orderInfo = undefined;
         this.served = false;
-
+        this.eventSource;
     }
 
     init() {
@@ -117,28 +117,49 @@ class IndexView {
         fetch(configuration.table()).then(res => res.json()).then(table => {
             this.table_id = table.id;
         });
-        fetch(configuration.menu()).then(res => res.json()).then(menu => {
-            menu.dishes.forEach((d) => {
+        this.eventSource = new EventSource(configuration.menu());
+        this.eventSource.onmessage = (e) => {
+            var d = JSON.parse(e.data);
+            if (d.type === 'DISH') {
                 this.eatContainer.appendChild(this.newH5(d.name));
                 this.eatContainer.appendChild(this.newDescription(d));
                 this.eatContainer.appendChild(this.anchorAddToFoodCart(d));
+                document.getElementById('food_btn').removeAttribute("disabled");
 
-            });
-            menu.drinks.forEach((d) => {
+            }
+            if (d.type === 'DRINK') {
                 this.drinksContainer.appendChild(this.newH5(d.name));
                 this.drinksContainer.appendChild(this.newDescription(d));
                 this.drinksContainer.appendChild(this.anchorddToDrinkCart(d));
-            });
-            if (menu.dishes.length > 0) {
-                document.getElementById('food_btn').removeAttribute("disabled");
-            }
-            if (menu.drinks.length > 0) {
                 document.getElementById('drink_btn').removeAttribute("disabled");
+                
             }
-        }
-        ).catch(error => {
-            console.log(error);
-        });
+        };
+        this.eventSource.onerror = (e) => {
+            this.eventSource.close();
+        };
+//        fetch(configuration.menu()).then(res => res.json()).then(menu => {
+//            menu.dishes.forEach((d) => {
+//                this.eatContainer.appendChild(this.newH5(d.name));
+//                this.eatContainer.appendChild(this.newDescription(d));
+//                this.eatContainer.appendChild(this.anchorAddToFoodCart(d));
+//
+//            });
+//            menu.drinks.forEach((d) => {
+//                this.drinksContainer.appendChild(this.newH5(d.name));
+//                this.drinksContainer.appendChild(this.newDescription(d));
+//                this.drinksContainer.appendChild(this.anchorddToDrinkCart(d));
+//            });
+//            if (menu.dishes.length > 0) {
+//                document.getElementById('food_btn').removeAttribute("disabled");
+//            }
+//            if (menu.drinks.length > 0) {
+//                document.getElementById('drink_btn').removeAttribute("disabled");
+//            }
+//        }
+//        ).catch(error => {
+//            console.log(error);
+//        });
 
     }
 
