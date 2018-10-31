@@ -14,8 +14,8 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
@@ -29,7 +29,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 @EnableRabbit
 @EnableWebSocket
 @EnableRetry
-@EnableEurekaClient
+@EnableDiscoveryClient
 @EnableAsync
 @EnableCircuitBreaker
 public class DinerApplication implements RabbitListenerConfigurer {

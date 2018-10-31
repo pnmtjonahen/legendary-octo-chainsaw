@@ -35,7 +35,7 @@ import reactor.core.publisher.Flux;
 public class OrderService {
 
     @Value("${chef.url}")
-    private String cherUrl;
+    private String chefUrl;
     @Value("${bartender.url}")
     private String bartenderUrl;
 
@@ -71,7 +71,7 @@ public class OrderService {
                     .items(Arrays.asList(MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).id(item.getId()).build()))
                     .orderid(orderid)
                     .build());
-            restTemplate.exchange(cherUrl + "/api/order", HttpMethod.POST, request, RequestedMessage.class);
+            restTemplate.exchange(chefUrl + "/api/order", HttpMethod.POST, request, RequestedMessage.class);
         });
     }
 
@@ -79,7 +79,7 @@ public class OrderService {
         @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")})
     public Flux<Dish> getDishes() {
         ResponseEntity<List<Dish>> getResponse
-                = restTemplate.exchange(cherUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
+                = restTemplate.exchange(chefUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {
                 });
         return Flux.fromStream(getResponse.getBody().stream());
     }
@@ -102,7 +102,7 @@ public class OrderService {
     @HystrixCommand
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            final Dish dish = restTemplate.getForObject(cherUrl + "/api/dish/" + item.getRef(), Dish.class);
+            final Dish dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
             return dish == null ? 0L : dish.getPrice();
         }
         final Drink drink = restTemplate.getForObject(bartenderUrl + "/api/drink/" + item.getRef(), Drink.class);
@@ -112,7 +112,7 @@ public class OrderService {
     @HystrixCommand
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            final Dish dish = restTemplate.getForObject(cherUrl + "/api/dish/" + item.getRef(), Dish.class);
+            final Dish dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
             return dish == null ? "" : dish.getName();
         }
         final Drink drink = restTemplate.getForObject(bartenderUrl + "/api/drink/" + item.getRef(), Drink.class);
