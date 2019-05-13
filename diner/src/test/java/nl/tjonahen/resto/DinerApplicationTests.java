@@ -12,6 +12,7 @@ import org.springframework.amqp.rabbit.test.RabbitListenerTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -45,11 +46,11 @@ public class DinerApplicationTests {
         wireMock.register(get(urlEqualTo("/bartender/api/menu"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .withBody("[]")));
 
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/menu").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andExpect(content().string("{\"dishes\":[],\"drinks\":[]}"));
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/menu").accept(MediaType.TEXT_EVENT_STREAM_VALUE))
+                .andExpect(status().isOk()).andExpect(content().string("data:{\"type\":\"DRINK\",\"ref\":\"water\",\"name\":\"water\",\"description\":\"complementary water\",\"price\":0}\n\n"));
     }
 
 }
