@@ -14,6 +14,7 @@ import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -88,9 +89,10 @@ public class OrderService {
         return Flux.empty();
     }
 
-    @HystrixCommand(fallbackMethod = "defaultDrinks")
+//    @HystrixCommand(fallbackMethod = "defaultDrinks")
     public Flux<Drink> getDrinks() {
-        return webClientBuilder.build().get().uri(bartenderUrl + "/api/menu").retrieve().bodyToFlux(Drink.class);
+        final Flux<Drink> call = webClientBuilder.build().get().uri(bartenderUrl + "/api/menu").retrieve().bodyToFlux(Drink.class);
+        return HystrixCommands.from(call).fallback(Flux.fromIterable(Arrays.asList(new Drink("water", "water", "complementary water", 0L)))).commandName("getDrinks").toFlux();
     }
 
     public Flux<Drink> defaultDrinks(Throwable t) {
