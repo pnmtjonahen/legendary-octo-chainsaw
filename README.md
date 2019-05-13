@@ -58,3 +58,6 @@ goto the front subfolder and run
 mvn spring-boot:run
 ```
 The frontend will be running on http://localhost:8080
+
+2. Deploy on PCF
+- cf create-service p-config-server trial myConfigServer -c '{"git": { "uri": "https://github.com/pnmtjonahen/config.git"} }'

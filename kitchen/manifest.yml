@@ -1,7 +1,10 @@
 ---
 applications:
     - name : tjonahen-chef
-      buildpack: java_buildpack
+      buildpacks: 
+        - https://github.com/cloudfoundry/java-buildpack.git
+      env:
+        JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 12.+ } }'
       path: target/chef.jar
       services:
         - myConfigServer
