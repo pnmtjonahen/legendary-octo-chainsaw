@@ -1,6 +1,7 @@
 package nl.tjonahen.resto;
 
 import brave.sampler.Sampler;
+import java.util.Collections;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -24,6 +25,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableRabbit
@@ -32,6 +40,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 @EnableDiscoveryClient
 @EnableAsync
 @EnableCircuitBreaker
+@EnableSwagger2
 public class DinerApplication implements RabbitListenerConfigurer {
 
     public static final String BARTENDER_QUEUE = "bartender-queue";
@@ -108,6 +117,28 @@ public class DinerApplication implements RabbitListenerConfigurer {
     @Bean
     public Sampler defaultSampler() {
         return Sampler.ALWAYS_SAMPLE;
+    }
+
+    /*
+    * Swagger 2 API documentation
+     */
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("nl.tjonahen.resto"))
+                .paths(PathSelectors.any())
+                .build()
+                .apiInfo(new ApiInfo(
+                        "Diner REST API",
+                        "Diner REST API used by both the frontend and also by the Bar and Kitchen.",
+                        "V1",
+                        "n/a",
+                        new Contact("PN Tjon-A-Hen", "www.tjonahen.nl", "philippe@tjonahen.nl"),
+                        "DBAD", 
+                        "https://dbad-license.org/", 
+                        Collections.emptyList()));
+
     }
 
 }

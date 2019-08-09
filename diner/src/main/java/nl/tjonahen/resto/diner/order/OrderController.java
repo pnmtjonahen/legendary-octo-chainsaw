@@ -14,6 +14,7 @@ import nl.tjonahen.resto.diner.order.model.OrderStatus;
 import nl.tjonahen.resto.diner.persistence.OrderRepository;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,20 +39,20 @@ public class OrderController {
     private final OrderService orderService;
     private final OrderStatusBroker orderStatusBroker;
 
-    public OrderController(OrderRepository orderRepository, OrderService orderService, OrderStatusBroker orderStatusBroker) {
+    public OrderController(final OrderRepository orderRepository, final OrderService orderService, final OrderStatusBroker orderStatusBroker) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.orderStatusBroker = orderStatusBroker;
     }
 
-    @GetMapping
-    public List<Order> getAllOrders() {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Order> getOrders() {
         return orderRepository.findAll();
     }
 
     @CrossOrigin
     @GetMapping("/{id}/bill")
-    public Bill getOrderBill(@PathVariable Long id) {
+    public Bill getBill(@PathVariable Long id) {
         Order order = orderRepository.getOne(id);
         List<BillItem> billItems = order.getOrderItems()
                 .stream()
@@ -95,6 +96,7 @@ public class OrderController {
             orderRepository.save(order);
         }
     }
+    
     @PostMapping("/{id}/serve/{did}")
     public void serveDish(@PathVariable Long id, @PathVariable Long did) throws IOException {
         final Order order = orderRepository.getOne(id);
@@ -119,7 +121,7 @@ public class OrderController {
 
     @CrossOrigin
     @PostMapping("/{id}/pay")
-    public void servePayOrder(@PathVariable Long id) {
+    public void pay(@PathVariable Long id) {
         log.info("Order {} is payed", id);
     }
 
