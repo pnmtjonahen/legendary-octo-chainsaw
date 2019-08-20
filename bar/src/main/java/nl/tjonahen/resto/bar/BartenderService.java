@@ -25,7 +25,7 @@ public class BartenderService {
         this.restTemplate = restTemplate;
     }
 
-    private final static List<Drink> DRINKS = Arrays.asList(
+    private static final List<Drink> DRINKS = Arrays.asList(
             Drink.builder().ref("1").preparationTime(30L).name("Coffee").description("Regular coffee").price(250L).build(),
             Drink.builder().ref("2").preparationTime(30L).name("Chocolato").description("Chocolate espresso with milk").price(450L).build(),
             Drink.builder().ref("3").preparationTime(30L).name("Corretto").description("Whiskey and coffee").price(500L).build(),

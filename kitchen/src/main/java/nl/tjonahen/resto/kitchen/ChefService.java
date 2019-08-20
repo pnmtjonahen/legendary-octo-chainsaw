@@ -37,7 +37,7 @@ public class ChefService {
     }
     
     @Async
-    public void processCoupon(CouponMessage dishes) throws RestClientException {
+    public void processCoupon(CouponMessage dishes) {
         log.info("Prepare food for order {}", dishes.getOrderid());
         for (Coupon dish : dishes.getItems()) {
             DISHES.stream().filter(d -> d.getRef().equals(dish.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
