@@ -33,6 +33,7 @@ import reactor.core.publisher.Flux;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private static final String WATER = "water";
 
     @Value("${chef.url}")
     private String chefUrl;
@@ -92,12 +93,12 @@ public class OrderService {
 //    @HystrixCommand(fallbackMethod = "defaultDrinks")
     public Flux<Drink> getDrinks() {
         final Flux<Drink> call = webClientBuilder.build().get().uri(bartenderUrl + "/api/menu").retrieve().bodyToFlux(Drink.class);
-        return HystrixCommands.from(call).fallback(Flux.fromIterable(Arrays.asList(new Drink("water", "water", "complementary water", 0L)))).commandName("getDrinks").toFlux();
+        return HystrixCommands.from(call).fallback(Flux.fromIterable(Arrays.asList(new Drink(WATER, WATER, "complementary water", 0L)))).commandName("getDrinks").toFlux();
     }
 
     public Flux<Drink> defaultDrinks(Throwable t) {
         log.warn("getDrinks failed with ", t);
-        return Flux.fromIterable(Arrays.asList(new Drink("water", "water", "complementary water", 0L)));
+        return Flux.fromIterable(Arrays.asList(new Drink(WATER, WATER, "complementary water", 0L)));
     }
 
     @HystrixCommand

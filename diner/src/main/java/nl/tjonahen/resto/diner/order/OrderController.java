@@ -59,7 +59,7 @@ public class OrderController {
                 .map(item -> BillItem.builder().name(orderService.getName(item)).quantity(item.getQuantity()).price(orderService.getPrice(item)).build())
                 .collect(Collectors.toList());
         return Bill.builder().items(billItems).total(billItems.stream()
-                .map(item -> item.getTotal())
+                .map(BillItem::getTotal)
                 .reduce(0L, (a, b) -> a + b))
                 .build();
 

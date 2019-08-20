@@ -61,7 +61,7 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
         sessions.entrySet()
                 .stream()
                 .filter(e -> e.getValue().getId().equals(session.getId()))
-                .map(e -> e.getKey())
+                .map(Map.Entry::getKey)
                 .forEach(id -> sessions.remove(id));
     }
 
@@ -72,6 +72,7 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable th) throws Exception {
+        log.info("ignore transport errors.");
     }
 
     @Override
@@ -101,6 +102,5 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
 @Getter
 @Setter
 class OrderId {
-
     private String orderid;
 }
