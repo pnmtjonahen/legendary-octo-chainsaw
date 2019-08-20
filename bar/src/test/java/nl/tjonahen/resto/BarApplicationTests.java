@@ -13,6 +13,7 @@ public class BarApplicationTests {
 
 	@Test
 	public void contextLoads() {
+            // for now a placeholder to have actual integration tests
 	}
 
 }
