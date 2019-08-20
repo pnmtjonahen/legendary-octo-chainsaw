@@ -29,8 +29,5 @@ public class BartenderControllerTest {
         Assert.assertNotNull(bartenderController.getAllDrinks());
     }
 
-    @Test
-    public void testGetDrink() {
-    }
-    
+   
 }

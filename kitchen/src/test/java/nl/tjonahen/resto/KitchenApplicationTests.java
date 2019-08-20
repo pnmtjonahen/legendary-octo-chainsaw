@@ -3,6 +3,7 @@ package nl.tjonahen.resto;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import nl.tjonahen.resto.kitchen.Coupon;
 import nl.tjonahen.resto.kitchen.CouponMessage;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -27,10 +29,6 @@ public class KitchenApplicationTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @Test
-    public void contextLoads() {
-    }
 
     @Test
     public void testGetMenu() throws Exception {
@@ -56,6 +54,7 @@ public class KitchenApplicationTests {
         coupon.setRef("1");
         couponMessage.setItems(new Coupon[]{coupon});
         HttpEntity<CouponMessage> request = new HttpEntity<>(couponMessage);
-        this.restTemplate.exchange("http://localhost:" + port + "/api/order", HttpMethod.POST, request, CouponMessage.class);
+        HttpStatus statusCode = this.restTemplate.exchange("http://localhost:" + port + "/api/order", HttpMethod.POST, request, CouponMessage.class).getStatusCode();
+        assertEquals(HttpStatus.ACCEPTED, statusCode);
     }
 }

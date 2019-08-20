@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -40,7 +39,7 @@ public class ChefService {
     public void processCoupon(CouponMessage dishes) {
         log.info("Prepare food for order {}", dishes.getOrderid());
         for (Coupon dish : dishes.getItems()) {
-            DISHES.stream().filter(d -> d.getRef().equals(dish.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
+            DISHES.stream().filter(d -> d.getRef().equals(dish.getRef())).mapToLong(Dish::getPreparationTime).forEach(d -> {
                 try {
                     Thread.sleep(d*100*dish.getQuantity());
                 } catch (InterruptedException ex) {

@@ -30,7 +30,7 @@ public class BartenderMessageListner {
         log.info("Prepare drinks for order {}", drinks.getOrderid());
 
         for (Coupon drink : drinks.getItems()) {
-            bartenderService.getAllDrinks().stream().filter(d -> d.getRef().equals(drink.getRef())).mapToLong(d -> d.getPreparationTime()).forEach(d -> {
+            bartenderService.getAllDrinks().stream().filter(d -> d.getRef().equals(drink.getRef())).mapToLong(Drink::getPreparationTime).forEach(d -> {
                 try {
                     Thread.sleep(d*100*drink.getQuantity());
                 } catch (InterruptedException ex) {

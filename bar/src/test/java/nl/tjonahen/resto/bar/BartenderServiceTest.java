@@ -4,6 +4,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -32,6 +33,8 @@ public class BartenderServiceTest {
         Mockito.when(restTemplate.postForLocation("null/api/order/271266/serve/drinks", Void.class)).thenReturn(null);
         
         sut.serveDrink(271266L);
+        
+        verify(restTemplate).postForLocation("null/api/order/271266/serve/drinks", Void.class);
         
     }
     
