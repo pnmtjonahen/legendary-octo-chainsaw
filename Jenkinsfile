@@ -32,10 +32,10 @@ pipeline {
       }
       stage('Dependency Check') {
         steps {
-          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -f diner/pom.xml'
-          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -DautoUpdate=false -f bar/pom.xml'
-          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -DautoUpdate=false -f kitchen/pom.xml'
-          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -DautoUpdate=false -f front/pom.xml'
+          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -f diner/pom.xml'
+          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -f bar/pom.xml'
+          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -f kitchen/pom.xml'
+          sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -f front/pom.xml'
           step([$class: 'DependencyCheckPublisher', unstableTotalAll: '0'])
         }
       }
