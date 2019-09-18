@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'maven:azulzulu-11'
-            args '-v /root/.m2:/root/.m2'
+            image 'maven:3.6.1-jdk-12'
+            args '-v /root/.m2:/root/.m2 --network=local-sb-network'
         }
     }
     stages {
