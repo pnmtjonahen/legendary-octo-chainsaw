@@ -36,6 +36,7 @@ pipeline {
           sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -DautoUpdate=false -f bar/pom.xml'
           sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -DautoUpdate=false -f kitchen/pom.xml'
           sh 'mvn org.owasp:dependency-check-maven:check -Dformat=XML -DdataDirectory=/usr/share/nvd -DautoUpdate=false -f front/pom.xml'
+          step([$class: 'DependencyCheckPublisher', unstableTotalAll: '0'])
         }
       }
 
