@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class KitchenApplicationTests {
 
     @Rule
-    public WireMockRule rule = new WireMockRule(9999);
+    public WireMockRule rule = new WireMockRule(19999);
 
     @LocalServerPort
     private int port;
