@@ -8,7 +8,10 @@ sonarcloud-check:
     paths:
       - .sonar/cache
   script:
-    - mvn verify sonar:sonar
+    - mvn verify sonar:sonar -f bar/pom.xml -Pgitlab-ci
+    - mvn verify sonar:sonar -f kitchen/pom.xml -Pgitlab-ci
+    - mvn verify sonar:sonar -f diner/pom.xml -Pgitlab-ci
+    - mvn verify sonar:sonar -f front/pom.xml -Pgitlab-ci
   only:
     - merge_requests
     - master
