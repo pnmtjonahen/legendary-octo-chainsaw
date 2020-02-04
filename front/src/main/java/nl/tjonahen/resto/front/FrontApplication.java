@@ -1,7 +1,5 @@
 package nl.tjonahen.resto.front;
 
-import lombok.Builder;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,13 +16,6 @@ public class FrontApplication {
     }
 }
 
-@Getter
-@Builder
-class Config {
-
-    private final String http_server;
-    private final String ws_server;
-}
 
 @RestController
 @RequestMapping("/")
