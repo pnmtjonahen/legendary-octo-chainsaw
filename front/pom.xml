@@ -22,6 +22,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
         <spring-cloud-services.version>3.0.1.RELEASE</spring-cloud-services.version>
+        <sonar.projectKey>pnmtjonahen_legendary-octo-chainsaw</sonar.projectKey>
+        <sonar.organization>pnmtjonahen</sonar.organization>
+
     </properties>
     <dependencyManagement>
         <dependencies>
