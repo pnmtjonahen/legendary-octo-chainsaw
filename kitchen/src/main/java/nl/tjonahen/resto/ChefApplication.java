@@ -13,6 +13,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.VendorExtension;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -56,6 +57,6 @@ public class ChefApplication {
                         new Contact("PN Tjon-A-Hen", "www.tjonahen.nl", "philippe@tjonahen.nl"),
                         "DBAD", 
                         "https://dbad-license.org/", 
-                        Collections.emptyList()));
+                        Collections.<VendorExtension>emptyList()));
     }
 }

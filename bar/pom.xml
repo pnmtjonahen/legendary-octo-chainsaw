@@ -16,7 +16,14 @@
         <spring-cloud-services.version>3.0.1.RELEASE</spring-cloud-services.version>
         <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
     </properties>
-    
+    <profiles>
+        <profile>
+            <id>gitlab-ci</id>
+            <properties>
+                <sonar.moduleKey>${artifactId}</sonar.moduleKey>
+            </properties>
+        </profile>
+    </profiles>    
     <dependencyManagement>
         <dependencies>
             <dependency>
