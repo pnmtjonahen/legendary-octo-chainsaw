@@ -25,7 +25,7 @@
         <profile>
             <id>gitlab-ci</id>
             <properties>
-                <sonar.moduleKey>${artifactId}</sonar.moduleKey>
+                <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
             </properties>
         </profile>
     </profiles> 

@@ -44,6 +44,7 @@ public class ChefService {
                     Thread.sleep(d*100*dish.getQuantity());
                 } catch (InterruptedException ex) {
                     log.error("Interupted while preparing food: ", ex);
+                     Thread.currentThread().interrupt();
                 }
                 log.info("Dish {} is ready for service for order {}", dish.getId(), dishes.getOrderid());
                 restTemplate.postForLocation(String.format("%s/api/order/%d/serve/%d",dinerUrl, dishes.getOrderid(), dish.getId()), Void.class);

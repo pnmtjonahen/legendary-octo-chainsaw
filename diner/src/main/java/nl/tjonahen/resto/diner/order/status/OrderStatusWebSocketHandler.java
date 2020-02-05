@@ -50,7 +50,7 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> encodedMessage) throws Exception {
-        OrderId value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderId.class);
+        OrderStatus value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderStatus.class);
         final Long orderid = Long.valueOf(value.getOrderid());
         sessions.put(orderid, session);
         log.info("Register socket {} for orderid {}", session.getId(), orderid);
@@ -62,7 +62,7 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
                 .stream()
                 .filter(e -> e.getValue().getId().equals(session.getId()))
                 .map(Map.Entry::getKey)
-                .forEach(id -> sessions.remove(id));
+                .forEach(sessions::remove);
     }
 
     @Override
@@ -101,6 +101,6 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
 
 @Getter
 @Setter
-class OrderId {
+class OrderStatus {
     private String orderid;
 }

@@ -35,6 +35,7 @@ public class BartenderMessageListner {
                     Thread.sleep(d*100*drink.getQuantity());
                 } catch (InterruptedException ex) {
                     log.error("Interupted while making beverage: ", ex);
+                     Thread.currentThread().interrupt();
                 }
             });
         }
