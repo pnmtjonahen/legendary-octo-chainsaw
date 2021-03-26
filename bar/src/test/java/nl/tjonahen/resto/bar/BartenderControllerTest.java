@@ -1,19 +1,15 @@
 package nl.tjonahen.resto.bar;
 
 import java.util.ArrayList;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- *
- * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
- */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BartenderControllerTest {
 
     @Mock
@@ -26,7 +22,7 @@ public class BartenderControllerTest {
     @Test
     public void testGetAllDrinks() {
         Mockito.when(bartenderServiceMock.getAllDrinks()).thenReturn(new ArrayList<>());
-        Assert.assertNotNull(bartenderController.getAllDrinks());
+        assertNotNull(bartenderController.getAllDrinks());
     }
 
    

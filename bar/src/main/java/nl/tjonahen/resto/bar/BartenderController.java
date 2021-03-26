@@ -1,6 +1,7 @@
 package nl.tjonahen.resto.bar;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,15 +15,11 @@ import reactor.core.publisher.Flux;
  */
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class BartenderController {
     
     private final BartenderService bartenderService;
-
-    public BartenderController(BartenderService barService) {
-        this.bartenderService = barService;
-    }
-    
-    
+   
     /**
      * Get all the drinks the bartender can make.
      * @return a list of drinks.

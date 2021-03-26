@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 
-/**
- *
- * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
- */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MenuControllerTest {
 
     @Mock

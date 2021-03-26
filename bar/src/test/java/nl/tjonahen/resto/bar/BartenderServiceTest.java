@@ -1,8 +1,8 @@
 package nl.tjonahen.resto.bar;
 
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import org.springframework.web.client.RestTemplate;
@@ -20,7 +20,7 @@ public class BartenderServiceTest {
         final BartenderService sut = new BartenderService(null);
         final List<Drink> drinks = sut.getAllDrinks();
         
-        Assert.assertEquals(5, drinks.size());
+        assertEquals(5, drinks.size());
         
     }
 

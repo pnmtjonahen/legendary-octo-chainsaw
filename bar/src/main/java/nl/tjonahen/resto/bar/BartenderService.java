@@ -1,10 +1,10 @@
 package nl.tjonahen.resto.bar;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.CircuitBreaker;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,7 +36,7 @@ public class BartenderService {
         return DRINKS;
     }
 
-    @HystrixCommand
+    @CircuitBreaker
     public void serveDrink(final Long orderId) {
         log.info("Drinks are ready for service for order {}", orderId);
         restTemplate.postForLocation(String.format("%s/api/order/%d/serve/drinks",dinerUrl, orderId), Void.class);
