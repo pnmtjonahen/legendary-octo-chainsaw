@@ -1,5 +1,7 @@
 package nl.tjonahen.resto.diner.order.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,19 +14,15 @@ import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.CircuitBreaker;
-import org.springframework.retry.annotation.Recover;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+
 
 /**
  *
@@ -47,11 +45,8 @@ public class OrderService {
     
     private final WebClient.Builder webClientBuilder;
 
-    private final ReactiveCircuitBreakerFactory rcbFactory;
-    private final CircuitBreakerFactory cbFactory;
-    
     @Async
-    @CircuitBreaker
+    @CircuitBreaker(name = "processdrinks")
     public void processDrinks(Long orderid, List<OrderItem> drinks) {
         if (drinks.isEmpty()) {
             return;
@@ -65,7 +60,7 @@ public class OrderService {
     }
 
     @Async
-    @CircuitBreaker
+    @CircuitBreaker(name = "processdishes")
     public void processDishes(Long orderid, List<OrderItem> dishes) {
         if (dishes.isEmpty()) {
             return;
@@ -80,31 +75,27 @@ public class OrderService {
         });
     }
 
-//    @CircuitBreaker(fallbackMethod = "defaultDishes"), commandProperties = {
-//        @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")})
-    @CircuitBreaker
-    public Flux<Dish> getDishes() {
-        ResponseEntity<List<Dish>> getResponse = restTemplate.exchange(chefUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {});
-        return Flux.fromStream(getResponse.getBody().stream());
+    @CircuitBreaker(name="getdishes", fallbackMethod = "defaultDishes")
+    public List<Dish> getDishes() {
+        return restTemplate.exchange(chefUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {}).getBody();
     }
 
-    @Recover
-    public Flux<Dish> defaultDishes(Throwable t) {
-        log.warn("getDishes failed with ", t);
-        return Flux.empty();
+    public List<Dish> defaultDishes(Exception t) {
+        log.error("getDishes failed with ", t);
+        return new ArrayList<>();
     }
 
+    @CircuitBreaker(name="getdrinks", fallbackMethod = "defaultDrinks")
     public Flux<Drink> getDrinks() {
-        final Flux<Drink> call = webClientBuilder.build().get().uri(bartenderUrl + "/api/menu").retrieve().bodyToFlux(Drink.class);
-        return rcbFactory.create("getDrinks").run(call, throwable -> Flux.fromIterable(Arrays.asList(new Drink(WATER, WATER, "complementary water", 0L))));
+        return webClientBuilder.build().get().uri(bartenderUrl + "/api/menu").retrieve().bodyToFlux(Drink.class);
     }
 
     public Flux<Drink> defaultDrinks(Throwable t) {
-        log.warn("getDrinks failed with ", t);
+        log.error("getDrinks failed with ", t);
         return Flux.fromIterable(Arrays.asList(new Drink(WATER, WATER, "complementary water", 0L)));
     }
 
-    @CircuitBreaker
+    @CircuitBreaker(name = "getprice")
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
             final Dish dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
@@ -114,7 +105,7 @@ public class OrderService {
         return drink == null ? 0L : drink.getPrice();
     }
 
-    @CircuitBreaker
+    @CircuitBreaker(name="getname")
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
             final Dish dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);

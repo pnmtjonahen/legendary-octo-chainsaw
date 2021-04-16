@@ -1,0 +1,31 @@
+spring:
+    jpa:
+        open-in-view: true
+        generate-ddl: true
+        hibernate:
+            ddl-auto: update        
+ribbon:
+    http:
+        client:
+            enabled: true
+
+resilience4j:
+    circuitbreaker:
+        configs:
+            default:
+                slidingWindowType: TIME_BASED
+                minimumNumberOfCalls: 2
+                slidingWindowSize: 60
+        instances:
+            processdrinks:
+                baseConfig: default
+            processdishes:
+                baseConfig: default
+            getdishes:
+                baseConfig: default
+            getdrinks:
+                baseConfig: default
+            getprice:
+                baseConfig: default
+            getname:
+                baseConfig: default

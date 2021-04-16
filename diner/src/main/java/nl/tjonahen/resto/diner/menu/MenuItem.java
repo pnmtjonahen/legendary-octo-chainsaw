@@ -1,15 +1,19 @@
 package nl.tjonahen.resto.diner.menu;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuItem {
     public enum Type {DISH, DRINK}
-    private final Type type;
-    private final String ref;
-    private final String name;
-    private final String description;
-    private final Long price;
+    private Type type;
+    private String ref;
+    private String name;
+    private String description;
+    private Long price;
 }

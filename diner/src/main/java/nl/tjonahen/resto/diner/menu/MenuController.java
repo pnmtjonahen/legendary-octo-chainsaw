@@ -1,8 +1,8 @@
 package nl.tjonahen.resto.diner.menu;
 
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.logging.Logged;
 import nl.tjonahen.resto.diner.order.service.OrderService;
+import nl.tjonahen.resto.logging.Logged;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +35,7 @@ public class MenuController {
     public Flux<MenuItem> getMenu() {
         log.info("Getting Menu");
         return Flux.concat(
-                orderService.getDishes()
+                Flux.fromIterable(orderService.getDishes())
                         .map(d -> MenuItem.builder()
                         .ref(d.getRef())
                         .name(d.getName())
