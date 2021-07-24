@@ -16,9 +16,9 @@
     <description>Front end services</description>
 
     <properties>
-        <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
-        <spring-cloud-services.version>3.0.1.RELEASE</spring-cloud-services.version>
-        <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+        <spring-cloud.version>2020.0.1</spring-cloud.version>
+        <spring-cloud-services.version>3.2.0.RELEASE</spring-cloud-services.version>
+        <spring-boot.version>2.4.3</spring-boot.version>
     </properties>
     
     <profiles>
