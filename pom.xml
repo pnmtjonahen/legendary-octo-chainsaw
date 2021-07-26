@@ -74,6 +74,21 @@
                         </execution>                    
                     </executions>                
                 </plugin>
+                <plugin>
+                    <artifactId>fmt-maven-plugin</artifactId>
+                    <groupId>com.coveo</groupId>
+                    <version>2.10</version>
+                    <configuration>
+                        <displayLimit>180</displayLimit>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>                
             </plugins>
         </pluginManagement>
     </build>
