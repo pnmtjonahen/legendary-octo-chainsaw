@@ -29,9 +29,9 @@
         </profile>
         <profile>
             <id>gitlab-home</id>
-            <properties>
+<!--            <properties>
                 <sonar.projectKey>pnmtjonahen_legendary-octo-chainsaw</sonar.projectKey>
-            </properties>
+            </properties>-->
         </profile>
     </profiles>
     <build>
