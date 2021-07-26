@@ -6,10 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @RabbitListenerTest(spy = false, capture = false)
-public class BarApplicationTests {
+class BartenderApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	void contextLoads() {
             // for now a placeholder to have actual integration tests
 	}
 

@@ -30,7 +30,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @TestPropertySource(locations = "classpath:test.properties")
 @RabbitListenerTest(spy = false, capture = false)
 @ContextConfiguration(initializers = {WireMockInitializer.class})
-public class DinerApplicationTests {
+class DinerApplicationTests {
 
     @Autowired
     private WireMockServer wireMockServer;
@@ -45,13 +45,13 @@ public class DinerApplicationTests {
     private Integer port;
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         this.wireMockServer.resetAll();
         this.circuitBreakerRegistry.getAllCircuitBreakers().forEach(CircuitBreaker::reset);
     }
 
     @Test
-    public void testGetMenu() throws Exception {
+    void testGetMenu() throws Exception {
         this.wireMockServer.stubFor(get(urlEqualTo("/chef/api/menu"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -87,7 +87,7 @@ public class DinerApplicationTests {
     }
     
     @Test
-    public void testGetMenu_noDrinks() throws Exception {
+    void testGetMenu_noDrinks() throws Exception {
         this.wireMockServer.stubFor(get(urlEqualTo("/chef/api/menu"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -123,7 +123,7 @@ public class DinerApplicationTests {
     }
     
     @Test
-    public void testGetMenu_noDishesAndNoDrinks() throws Exception {
+    void testGetMenu_noDishesAndNoDrinks() throws Exception {
         this.wireMockServer.stubFor(get(urlEqualTo("/chef/api/menu"))
                 .willReturn(aResponse().withStatus(500)));
         

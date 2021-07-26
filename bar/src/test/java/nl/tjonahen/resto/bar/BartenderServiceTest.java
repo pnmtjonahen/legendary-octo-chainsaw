@@ -7,15 +7,11 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.verify;
 import org.springframework.web.client.RestTemplate;
 
-/**
- *
- * @author Philippe Tjon - A - Hen philippe@tjonahen.nl
- */
-public class BartenderServiceTest {
+class BartenderServiceTest {
     
 
     @Test
-    public void testGetAllDrinksExpect5Drinks() {
+    void testGetAllDrinksExpect5Drinks() {
    
         final BartenderService sut = new BartenderService(null);
         final List<Drink> drinks = sut.getAllDrinks();
@@ -25,7 +21,7 @@ public class BartenderServiceTest {
     }
 
     @Test
-    public void testServeDrinkExpectRestCall() {
+    void testServeDrinkExpectRestCall() {
         
         RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
         

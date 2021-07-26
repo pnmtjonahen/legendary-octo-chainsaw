@@ -63,7 +63,7 @@ public class BartenderApplication implements RabbitListenerConfigurer {
     }
 
     private DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
-        DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
+        var factory = new DefaultMessageHandlerMethodFactory();
         factory.setMessageConverter(new MappingJackson2MessageConverter());
         return factory;
     }

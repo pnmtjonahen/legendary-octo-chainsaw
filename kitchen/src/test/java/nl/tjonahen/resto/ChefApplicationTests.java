@@ -16,7 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class KitchenApplicationTests {
+public class ChefApplicationTests {
 
     @Rule
     public WireMockRule rule = new WireMockRule(19999);

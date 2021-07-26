@@ -92,7 +92,7 @@ public class DinerApplication implements RabbitListenerConfigurer {
 
     @Override
     public void configureRabbitListeners(final RabbitListenerEndpointRegistrar registrar) {
-        DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
+        final var factory = new DefaultMessageHandlerMethodFactory();
         factory.setMessageConverter(new MappingJackson2MessageConverter());
         registrar.setMessageHandlerMethodFactory(factory);
     }
@@ -102,7 +102,7 @@ public class DinerApplication implements RabbitListenerConfigurer {
      */
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        final var rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         return rabbitTemplate;
     }

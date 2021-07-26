@@ -46,7 +46,7 @@ sonar:
           # Run only when commit message doesn't start with "ABKRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/  
   script:
-    - mvn -Dsonar.java.source=16 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -B -Pgitlab-home
+    - mvn -Dsonar.java.source=16 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -B 
 
 #docker:
 #  only:

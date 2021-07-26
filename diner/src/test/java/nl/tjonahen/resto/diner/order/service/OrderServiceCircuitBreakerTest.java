@@ -26,7 +26,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = DinerApplication.class)
 @ContextConfiguration(initializers = {WireMockInitializer.class})
-public class OrderServiceCircuitBreakerTest {
+class OrderServiceCircuitBreakerTest {
 
     @Autowired
     private WireMockServer wireMockServer;
@@ -44,7 +44,7 @@ public class OrderServiceCircuitBreakerTest {
     }
 
     @Test
-    public void testGetDishesMenuCircuitBreaker() {
+    void testGetDishesMenuCircuitBreaker() {
         this.wireMockServer.stubFor(get(urlEqualTo("/chef/api/menu"))
                 .willReturn(aResponse().withStatus(500)));
         
@@ -60,7 +60,7 @@ public class OrderServiceCircuitBreakerTest {
     }
 
     @Test
-    public void testGetDrinksMenuCircuitBreaker() {
+    void testGetDrinksMenuCircuitBreaker() {
         this.wireMockServer.stubFor(get(urlEqualTo("/bartender/api/menu"))
                 .willReturn(aResponse().withStatus(500)));
 

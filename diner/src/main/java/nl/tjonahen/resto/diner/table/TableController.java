@@ -22,7 +22,7 @@ public class TableController {
     @CrossOrigin
     @GetMapping("/reserve")
     public Table reserveTable() {
-        final Table table = Table.builder().build();
+        final var table = Table.builder().build();
         tableRepository.save(table);
         return table;
     }

@@ -27,12 +27,6 @@
                 <sonar.organization>pnmtjonahen</sonar.organization>
             </properties>
         </profile>
-        <profile>
-            <id>gitlab-home</id>
-<!--            <properties>
-                <sonar.projectKey>pnmtjonahen_legendary-octo-chainsaw</sonar.projectKey>
-            </properties>-->
-        </profile>
     </profiles>
     <build>
         <pluginManagement>
