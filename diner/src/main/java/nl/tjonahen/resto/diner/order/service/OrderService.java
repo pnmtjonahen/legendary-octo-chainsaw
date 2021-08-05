@@ -65,7 +65,7 @@ public class OrderService {
         if (dishes.isEmpty()) {
             return;
         }
-        log.info("Sending ordered dishes to the chef......");
+        log.info("Sending ordered dishes to the chef({})......", chefUrl);
         dishes.stream().forEach(item -> {
             HttpEntity<RequestedMessage> request = new HttpEntity<>(RequestedMessage.builder()
                     .items(Arrays.asList(MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).id(item.getId()).build()))

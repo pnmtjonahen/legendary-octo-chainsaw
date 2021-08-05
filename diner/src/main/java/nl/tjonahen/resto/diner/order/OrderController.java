@@ -96,22 +96,22 @@ public class OrderController {
         }
     }
     
-    @PostMapping("/{id}/serve/{did}")
-    public void serveDish(@PathVariable Long id, @PathVariable Long did) throws IOException {
-        final var order = orderRepository.getOne(id);
+    @PostMapping("/{orderid}/serve/{dishid}")
+    public void serveDish(@PathVariable Long orderid, @PathVariable Long dishid) throws IOException {
+        final var order = orderRepository.getOne(orderid);
         try {
             order.getOrderItems()
                 .stream()
-                .filter(item -> item.getOrderItemType() == OrderItemType.DISH && item.getId().equals(did)).forEach(item -> item.setPrepared(true));
+                .filter(item -> item.getOrderItemType() == OrderItemType.DISH && item.getId().equals(dishid)).forEach(item -> item.setPrepared(true));
             if (order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DISH && !item.isPrepared()).count() ==0) {
-                log.info("Serving food for order {}", id);
-                orderStatusBroker.sendStatusUpdate(id, order.serveFood().name());
+                log.info("Serving food for order {}", orderid);
+                orderStatusBroker.sendStatusUpdate(orderid, order.serveFood().name());
                 order.setStatus(OrderStatus.FOOD_SERVED);
             }
         } catch (OrderNotFoundException ex) {
-            log.error("Table for Order {} not found, food cannot be served", id);
+            log.error("Table for Order {} not found, food cannot be served", orderid);
             order.setStatus(OrderStatus.NO_CUSTOMER);
         } finally {
             orderRepository.save(order);

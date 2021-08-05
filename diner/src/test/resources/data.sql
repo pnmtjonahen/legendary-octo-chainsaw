@@ -1,0 +1,1 @@
+insert into RESTO_ORDER(STATUS) values('INITIAL');
