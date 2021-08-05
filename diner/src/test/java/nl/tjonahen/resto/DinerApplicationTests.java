@@ -177,7 +177,7 @@ class DinerApplicationTests {
         
         this.wireMockServer.verify(postRequestedFor(urlEqualTo("/chef/api/order"))
             .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(WireMock.equalToJson("{\"orderid\":2, \"items\":[{\"id\":2,\"ref\":\"frites\",\"quantity\":1}]}")));
+                .withRequestBody(WireMock.equalToJson("{\"orderid\":2, \"items\":[{\"id\":4,\"ref\":\"frites\",\"quantity\":1}]}")));
         
         final RabbitListenerTestHarness.InvocationData invocationData =
             this.harness.getNextInvocationDataFor("testDrinks", 10, TimeUnit.SECONDS);
