@@ -39,7 +39,6 @@ import reactor.core.publisher.Mono;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:test.properties")
 @ContextConfiguration(initializers = {WireMockInitializer.class})
-//@Sql("/data.sql")
 class DinerApplicationTests {
 
     @Autowired
@@ -198,6 +197,15 @@ class DinerApplicationTests {
                 .expectStatus()
                 .is2xxSuccessful();
     }
+    @Test
+    void serveDishes_ordernotfound() {
+        this.webTestClient
+                .post()
+                .uri(String.format("http://localhost:%d/api/order/9/serve/dishes", port))
+                .exchange()
+                .expectStatus()
+                .is5xxServerError();
+    }
 
     @Test
     void serveDrinks() {
@@ -207,5 +215,15 @@ class DinerApplicationTests {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
+    }
+    
+    @Test
+    void serveDrinks_ordernotfound() {
+        this.webTestClient
+                .post()
+                .uri(String.format("http://localhost:%d/api/order/9/serve/drinks", port))
+                .exchange()
+                .expectStatus()
+                .is5xxServerError();
     }
 }
