@@ -10,22 +10,28 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import nl.tjonahen.resto.diner.menu.MenuItem;
 import nl.tjonahen.resto.diner.order.RequestedItem;
+import nl.tjonahen.resto.diner.order.status.OrderNotFoundException;
+import nl.tjonahen.resto.diner.order.status.OrderStatusWebSocketHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,6 +61,9 @@ class DinerApplicationTests {
 
     @LocalServerPort
     private Integer port;
+    
+    @MockBean
+    private OrderStatusWebSocketHandler orderStatusWebSocketHandler;
 
     @AfterEach
     void afterEach() {
@@ -189,13 +198,21 @@ class DinerApplicationTests {
     
 
     @Test
-    void serveDishes() {
+    void serveDishes() throws InterruptedException, IOException, OrderNotFoundException {
         this.webTestClient
                 .post()
                 .uri(String.format("http://localhost:%d/api/order/1/serve/dishes", port))
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
+       
+        final RabbitListenerTestHarness.InvocationData invocationData = this.harness.getNextInvocationDataFor("testBroker", 10, TimeUnit.SECONDS);
+	      assertNotNull(invocationData);
+        final Message message = (Message)invocationData.getArguments()[0];
+        final String body = new String(message.getBody());
+        assertEquals("{\"id\":1,\"msg\":\"FOOD_SERVED\"}", body);
+        
+        Mockito.verify(orderStatusWebSocketHandler).sendStatus(any(), any());
     }
     @Test
     void serveDishes_ordernotfound() {
@@ -208,13 +225,19 @@ class DinerApplicationTests {
     }
 
     @Test
-    void serveDrinks() {
+    void serveDrinks() throws InterruptedException {
         this.webTestClient
                 .post()
                 .uri(String.format("http://localhost:%d/api/order/1/serve/drinks", port))
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
+        final RabbitListenerTestHarness.InvocationData invocationData =
+            this.harness.getNextInvocationDataFor("testBroker", 10, TimeUnit.SECONDS);
+        assertNotNull(invocationData);
+        final Message message = (Message)invocationData.getArguments()[0];
+        final String body = new String(message.getBody());
+        assertEquals("{\"id\":1,\"msg\":\"DRINKS_SERVED\"}", body);
     }
     
     @Test

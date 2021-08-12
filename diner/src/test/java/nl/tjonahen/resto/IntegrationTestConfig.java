@@ -25,8 +25,14 @@ public class IntegrationTestConfig {
     public WebClient.Builder loadBalancedWebClientMockBuilder() {
         return WebClient.builder();
     }
+    
     @RabbitListener(id = "testDrinks", queues = DinerApplication.BARTENDER_QUEUE)
     public void receiveDrinks(final Message message) {
+            System.out.println(message.toString());
+    }
+
+    @RabbitListener(id = "testBroker", queues = DinerApplication.DINER_QUEUE)
+    public void orderBroker(final Message message) {
             System.out.println(message.toString());
     }
 }
