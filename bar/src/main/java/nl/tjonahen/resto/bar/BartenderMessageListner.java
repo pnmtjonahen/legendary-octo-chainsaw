@@ -25,8 +25,8 @@ public class BartenderMessageListner {
 
     @RabbitListener(queues = BartenderApplication.BARTENDER_QUEUE)
     public void receiveDrink(final Message message) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        CouponMessage drinks = objectMapper.readValue(message.getBody(), CouponMessage.class);
+        var objectMapper = new ObjectMapper();
+        var drinks = objectMapper.readValue(message.getBody(), CouponMessage.class);
         log.info("Prepare drinks for order {}", drinks.getOrderid());
 
         for (Coupon drink : drinks.getItems()) {

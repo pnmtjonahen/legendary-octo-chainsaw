@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    /*
+     * Disabling csrf is done for testing purposes.  Current setup does not have a API gateway.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();

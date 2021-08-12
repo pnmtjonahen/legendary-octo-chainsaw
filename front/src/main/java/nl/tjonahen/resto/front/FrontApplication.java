@@ -29,10 +29,11 @@ class ConfigController {
     @CrossOrigin
     @GetMapping(value = "/configuration.js", produces = "application/javascript")
     public String getConfig() {
-        return String.format("const config = {\n"
-                + "    http_server: \"%s\",\n"
-                + "    ws_server: \"%s\"\n"
-                + "};", httpServer, wsServer);
+        return String.format("""
+const config = {
+  http_server: "%s",
+  ws_server: "%s"
+};""", httpServer, wsServer);
 
     }
 

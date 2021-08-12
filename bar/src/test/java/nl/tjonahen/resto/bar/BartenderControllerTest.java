@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BartenderControllerTest {
+class BartenderControllerTest {
 
     @Mock
     private BartenderService bartenderServiceMock;
@@ -20,7 +20,7 @@ public class BartenderControllerTest {
             
 
     @Test
-    public void testGetAllDrinks() {
+    void testGetAllDrinks() {
         Mockito.when(bartenderServiceMock.getAllDrinks()).thenReturn(new ArrayList<>());
         assertNotNull(bartenderController.getAllDrinks());
     }
