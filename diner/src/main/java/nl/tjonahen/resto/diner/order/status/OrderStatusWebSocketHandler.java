@@ -1,6 +1,5 @@
 package nl.tjonahen.resto.diner.order.status;
 
-import brave.Span;
 import brave.Tracer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -50,8 +49,8 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> encodedMessage) throws Exception {
-        OrderStatus value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderStatus.class);
-        final Long orderid = Long.valueOf(value.getOrderid());
+        final var value = new ObjectMapper().readValue(encodedMessage.getPayload().toString(), OrderStatus.class);
+        final var orderid = Long.valueOf(value.getOrderid());
         sessions.put(orderid, session);
         log.info("Register socket {} for orderid {}", session.getId(), orderid);
     }
@@ -88,7 +87,7 @@ public class OrderStatusWebSocketHandler implements WebSocketHandler {
     public void sendStatus(Long id, String msg) throws IOException, OrderNotFoundException {
         if (sessions.containsKey(id)) {
             // create new span to trace websocket cal to client
-            final Span span = tracer.newChild(tracer.currentSpan().context()).name("sendStatus").start();
+            final var span = tracer.newChild(tracer.currentSpan().context()).name("sendStatus").start();
             sessions.get(id).sendMessage(new TextMessage(msg));
             span.finish();
         } else {

@@ -18,8 +18,8 @@ public class LogPayload {
     @Around("@annotation(Logged)")
     public Object logAction(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        final Object result = joinPoint.proceed();
-        final StringBuilder sb = new StringBuilder();
+        final var result = joinPoint.proceed();
+        final var sb = new StringBuilder();
 
         log.info(sb
                 .append("Action:")
@@ -35,12 +35,13 @@ public class LogPayload {
 
     }
 
-    private Stream logActionFields(final Object target) {
+    private Stream<String> logActionFields(final Object target) {
         return Arrays.stream(target.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(LogField.class))
                 .map(f -> logField(f, target));
     }
 
+    @SuppressWarnings("java:S3011") // setAccessible needed to log provate attributes
     private String logField(Field f, final Object target) {
 
         f.setAccessible(true);

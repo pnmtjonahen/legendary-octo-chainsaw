@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 
 @ExtendWith(MockitoExtension.class)
-public class MenuControllerTest {
+class MenuControllerTest {
 
     @Mock
     private OrderService orderService;
@@ -21,7 +21,7 @@ public class MenuControllerTest {
     private MenuController menuController;
     
     @Test
-    public void testGetMenu() throws Exception {
+    void testGetMenu() throws Exception {
         when(orderService.getDishes()).thenReturn(new ArrayList<>());
         when(orderService.getDrinks()).thenReturn(Flux.fromIterable(new ArrayList<>()));
         

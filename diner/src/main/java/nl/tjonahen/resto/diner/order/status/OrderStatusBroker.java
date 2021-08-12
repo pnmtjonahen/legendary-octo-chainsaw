@@ -49,8 +49,8 @@ public class OrderStatusBroker {
 
     @RabbitListener(queues = DinerApplication.DINER_QUEUE)
     public void receiveStatusUpdate(final Message message) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        OrderStatusMessage orderStatus = objectMapper.readValue(message.getBody(), OrderStatusMessage.class);
+        final var objectMapper = new ObjectMapper();
+        final var orderStatus = objectMapper.readValue(message.getBody(), OrderStatusMessage.class);
         try {
             orderStatusWebSocketHandler.sendStatus(orderStatus.getId(), orderStatus.getMsg());
         } catch (OrderNotFoundException ex) {

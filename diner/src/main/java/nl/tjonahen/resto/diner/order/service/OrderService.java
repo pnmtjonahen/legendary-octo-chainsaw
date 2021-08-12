@@ -65,7 +65,7 @@ public class OrderService {
         if (dishes.isEmpty()) {
             return;
         }
-        log.info("Sending ordered dishes to the chef......");
+        log.info("Sending ordered dishes to the chef({})......", chefUrl);
         dishes.stream().forEach(item -> {
             HttpEntity<RequestedMessage> request = new HttpEntity<>(RequestedMessage.builder()
                     .items(Arrays.asList(MessageItem.builder().quantity(item.getQuantity()).ref(item.getRef()).id(item.getId()).build()))
@@ -98,20 +98,20 @@ public class OrderService {
     @CircuitBreaker(name = "getprice")
     public Long getPrice(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            final Dish dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
+            final var dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
             return dish == null ? 0L : dish.getPrice();
         }
-        final Drink drink = restTemplate.getForObject(bartenderUrl + "/api/drink/" + item.getRef(), Drink.class);
+        final var drink = restTemplate.getForObject(bartenderUrl + "/api/drink/" + item.getRef(), Drink.class);
         return drink == null ? 0L : drink.getPrice();
     }
 
     @CircuitBreaker(name="getname")
     public String getName(OrderItem item) {
         if (item.getOrderItemType() == OrderItemType.DISH) {
-            final Dish dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
+            final var dish = restTemplate.getForObject(chefUrl + "/api/dish/" + item.getRef(), Dish.class);
             return dish == null ? "" : dish.getName();
         }
-        final Drink drink = restTemplate.getForObject(bartenderUrl + "/api/drink/" + item.getRef(), Drink.class);
+        final var drink = restTemplate.getForObject(bartenderUrl + "/api/drink/" + item.getRef(), Drink.class);
         return drink == null ? "" : drink.getName();
 
     }

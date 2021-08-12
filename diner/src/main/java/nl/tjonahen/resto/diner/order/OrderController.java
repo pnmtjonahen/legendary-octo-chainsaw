@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import nl.tjonahen.resto.diner.order.status.OrderNotFoundException;
-import nl.tjonahen.resto.diner.order.status.OrderStatusBroker;
 import nl.tjonahen.resto.diner.order.model.Order;
 import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import nl.tjonahen.resto.diner.order.model.OrderStatus;
-import nl.tjonahen.resto.diner.persistence.OrderRepository;
 import nl.tjonahen.resto.diner.order.service.OrderService;
+import nl.tjonahen.resto.diner.order.status.OrderNotFoundException;
+import nl.tjonahen.resto.diner.order.status.OrderStatusBroker;
+import nl.tjonahen.resto.diner.persistence.OrderRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -53,8 +52,8 @@ public class OrderController {
     @CrossOrigin
     @GetMapping("/{id}/bill")
     public Bill getBill(@PathVariable Long id) {
-        Order order = orderRepository.getOne(id);
-        List<BillItem> billItems = order.getOrderItems()
+        final var order = orderRepository.getOne(id);
+        final var billItems = order.getOrderItems()
                 .stream()
                 .map(item -> BillItem.builder().name(orderService.getName(item)).quantity(item.getQuantity()).price(orderService.getPrice(item)).build())
                 .collect(Collectors.toList());
@@ -67,7 +66,7 @@ public class OrderController {
 
     @PostMapping("/{id}/serve/drinks")
     public void serveDrinks(@PathVariable Long id) throws IOException {
-        final Order order = orderRepository.getOne(id);
+        final var order = orderRepository.getOne(id);
         try {
             log.info("Serving drinks for order {}", id);
             orderStatusBroker.sendStatusUpdate(id, order.serveDrinks().name());
@@ -84,7 +83,7 @@ public class OrderController {
 
     @PostMapping("/{id}/serve/dishes")
     public void serveDishes(@PathVariable Long id) throws IOException {
-        final Order order = orderRepository.getOne(id);
+        final var order = orderRepository.getOne(id);
         try {
             log.info("Serving food for order {}", id);
             orderStatusBroker.sendStatusUpdate(id, order.serveFood().name());
@@ -97,22 +96,22 @@ public class OrderController {
         }
     }
     
-    @PostMapping("/{id}/serve/{did}")
-    public void serveDish(@PathVariable Long id, @PathVariable Long did) throws IOException {
-        final Order order = orderRepository.getOne(id);
+    @PostMapping("/{orderid}/serve/{dishid}")
+    public void serveDish(@PathVariable Long orderid, @PathVariable Long dishid) throws IOException {
+        final var order = orderRepository.getOne(orderid);
         try {
             order.getOrderItems()
                 .stream()
-                .filter(item -> item.getOrderItemType() == OrderItemType.DISH && item.getId().equals(did)).forEach(item -> item.setPrepared(true));
+                .filter(item -> item.getOrderItemType() == OrderItemType.DISH && item.getId().equals(dishid)).forEach(item -> item.setPrepared(true));
             if (order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DISH && !item.isPrepared()).count() ==0) {
-                log.info("Serving food for order {}", id);
-                orderStatusBroker.sendStatusUpdate(id, order.serveFood().name());
+                log.info("Serving food for order {}", orderid);
+                orderStatusBroker.sendStatusUpdate(orderid, order.serveFood().name());
                 order.setStatus(OrderStatus.FOOD_SERVED);
             }
         } catch (OrderNotFoundException ex) {
-            log.error("Table for Order {} not found, food cannot be served", id);
+            log.error("Table for Order {} not found, food cannot be served", orderid);
             order.setStatus(OrderStatus.NO_CUSTOMER);
         } finally {
             orderRepository.save(order);
@@ -132,7 +131,7 @@ public class OrderController {
             final List<RequestedItem> orderItems,
             UriComponentsBuilder builder) {
 
-        final Order order = Order.builder()
+        final var order = Order.builder()
                 .status(OrderStatus.INITIAL)
                 .orderItems(orderItems.stream()
                         .map(item -> OrderItem.builder()
@@ -155,7 +154,7 @@ public class OrderController {
                 .collect(Collectors.toList()));
         
         log.info("Accepted order {}", order.getId());
-        UriComponents uriComponents = builder.path("/api/order/{id}/bill").buildAndExpand(order.getId());
+        final var uriComponents = builder.path("/api/order/{id}/bill").buildAndExpand(order.getId());
         return new ResponseEntity<>(ResponseOrder.builder().ref(order.getId()).billUrl(uriComponents.toUri().toString()).build(), HttpStatus.ACCEPTED);
     }
 }
