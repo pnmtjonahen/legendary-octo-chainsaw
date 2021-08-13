@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -205,15 +203,9 @@ class DinerApplicationTests {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
-       
-        final RabbitListenerTestHarness.InvocationData invocationData = this.harness.getNextInvocationDataFor("testBroker", 10, TimeUnit.SECONDS);
-	      assertNotNull(invocationData);
-        final Message message = (Message)invocationData.getArguments()[0];
-        final String body = new String(message.getBody());
-        assertEquals("{\"id\":1,\"msg\":\"FOOD_SERVED\"}", body);
-        
-        Mockito.verify(orderStatusWebSocketHandler).sendStatus(any(), any());
+      
     }
+    
     @Test
     void serveDishes_ordernotfound() {
         this.webTestClient
@@ -232,12 +224,6 @@ class DinerApplicationTests {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
-        final RabbitListenerTestHarness.InvocationData invocationData =
-            this.harness.getNextInvocationDataFor("testBroker", 10, TimeUnit.SECONDS);
-        assertNotNull(invocationData);
-        final Message message = (Message)invocationData.getArguments()[0];
-        final String body = new String(message.getBody());
-        assertEquals("{\"id\":1,\"msg\":\"DRINKS_SERVED\"}", body);
     }
     
     @Test
