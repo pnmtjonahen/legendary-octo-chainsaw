@@ -1,7 +1,8 @@
 package nl.tjonahen.resto;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import nl.tjonahen.resto.bar.Drink;
+import lombok.Getter;
+import lombok.Setter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,9 +42,21 @@ class BartenderApplicationTests {
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .exchange()
                 .expectStatus().is2xxSuccessful()
-                .expectBodyList(Drink.class)
+                .expectBodyList(TestDrink.class)
                 .returnResult()
                 .getResponseBody();// for now a placeholder to have actual integration tests
+    }
+
+    @Getter
+    @Setter
+    public static class TestDrink {
+
+        private String ref;
+        private String name;
+        private String description;
+        private Long price;
+        private Long preparationTime;
+
     }
 
 }
