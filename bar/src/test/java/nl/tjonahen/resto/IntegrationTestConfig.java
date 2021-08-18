@@ -23,6 +23,6 @@ public class IntegrationTestConfig {
     public WebClient.Builder loadBalancedWebClientMockBuilder() {
         return WebClient.builder();
     }
-   
+
 
 }

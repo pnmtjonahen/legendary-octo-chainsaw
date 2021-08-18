@@ -1,5 +1,8 @@
 image: maven:3.8.1-openjdk-16
 
+services:
+    - rabbitmq:latest
+    
 cache:
   key: "${CI_PROJECT_NAME}"
   paths:
