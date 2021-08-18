@@ -213,7 +213,7 @@ class DinerApplicationTests {
                 .uri(String.format("http://localhost:%d/api/order/9/serve/dishes", port))
                 .exchange()
                 .expectStatus()
-                .is5xxServerError();
+                .is4xxClientError();
     }
 
     @Test
@@ -233,6 +233,6 @@ class DinerApplicationTests {
                 .uri(String.format("http://localhost:%d/api/order/9/serve/drinks", port))
                 .exchange()
                 .expectStatus()
-                .is5xxServerError();
+                .is4xxClientError();
     }
 }
