@@ -33,6 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
+    private static final String ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE = "Error while updateing orderstatus {}";
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
@@ -78,7 +79,7 @@ public class OrderController {
                 log.error("Table for Order {} not found, drinks cannot be served", id);
                 order.setStatus(OrderStatus.NO_CUSTOMER);
             } catch (IOException ex) {
-                log.error("Error while updateing orderstatus {}", ex.getMessage());
+                log.error(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
             } finally {
                 orderRepository.save(order);
             }
@@ -98,7 +99,7 @@ public class OrderController {
                 log.error("Table for Order {} not found, food cannot be served", id);
                 order.setStatus(OrderStatus.NO_CUSTOMER);
             } catch (IOException ex) {
-                log.error("Error while updateing orderstatus {}", ex.getMessage());
+                log.error(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
             } finally {
                 orderRepository.save(order);
             }
@@ -108,7 +109,7 @@ public class OrderController {
     }
 
     @PostMapping("/{orderid}/serve/{dishid}")
-    public void serveDish(@PathVariable Long orderid, @PathVariable Long dishid) throws IOException {
+    public void serveDish(@PathVariable Long orderid, @PathVariable Long dishid) {
         orderRepository.getOrderById(orderid).ifPresentOrElse(order -> {
             try {
                 order.getOrderItems()
@@ -125,7 +126,7 @@ public class OrderController {
                 log.error("Table for Order {} not found, food cannot be served", orderid);
                 order.setStatus(OrderStatus.NO_CUSTOMER);
             } catch (IOException ex) {
-                log.error("Error while updateing orderstatus {}", ex.getMessage());
+                log.error(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
             } finally {
                 orderRepository.save(order);
             }

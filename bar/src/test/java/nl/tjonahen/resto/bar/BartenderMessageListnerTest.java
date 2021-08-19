@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
@@ -29,7 +28,7 @@ class BartenderMessageListnerTest {
         couponMessage.setOrderid(1L);
         final Coupon[] items = { newCoupon()};
         couponMessage.setItems(items);
-        when(objectMapperMock.readValue(eq("".getBytes()), eq(CouponMessage.class))).thenReturn(couponMessage);
+        when(objectMapperMock.readValue("".getBytes(), CouponMessage.class)).thenReturn(couponMessage);
         
         when(serviceMock.getAllDrinks()).thenReturn(Arrays.asList(new Drink("test-ref", "test-drink", "short drink", 1L, 0L)));
         
