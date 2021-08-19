@@ -1,8 +1,6 @@
 image: maven:3.8.1-openjdk-16
+ 
 
-services:
-    - rabbitmq:latest
-    
 cache:
   key: "${CI_PROJECT_NAME}"
   paths:
@@ -33,6 +31,8 @@ build:
 
 test:
   stage: test
+  services:
+    - rabbitmq:latest
   only:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
