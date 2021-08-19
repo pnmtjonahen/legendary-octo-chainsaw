@@ -37,7 +37,7 @@ test:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
-  script: "mvn verify -B"
+  script: "mvn -Dspring.profiles.active=gitlab verify -B"
   artifacts:
     reports:
       junit:
