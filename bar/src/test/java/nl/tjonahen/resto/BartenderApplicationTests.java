@@ -1,16 +1,62 @@
 package nl.tjonahen.resto;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+import lombok.Getter;
+import lombok.Setter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.test.RabbitListenerTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
-@SpringBootTest
-@RabbitListenerTest(spy = false, capture = false)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+@ContextConfiguration(initializers = {WireMockInitializer.class})
 class BartenderApplicationTests {
+    @Autowired
+    private WireMockServer wireMockServer;
 
-	@Test
-	void contextLoads() {
-            // for now a placeholder to have actual integration tests
-	}
+    @Autowired
+    private WebTestClient webTestClient;
+    
+    @LocalServerPort
+    private Integer port;
+    
+
+    @AfterEach
+    void afterEach() {
+        this.wireMockServer.resetAll();
+    }
+    
+    @Test
+    void getMenu() {
+        this.webTestClient.get()
+                .uri(String.format("http://localhost:%d/api/menu", port))
+                .accept(MediaType.TEXT_EVENT_STREAM)
+                .exchange()
+                .expectStatus().is2xxSuccessful()
+                .expectBodyList(TestDrink.class)
+                .returnResult()
+                .getResponseBody();// for now a placeholder to have actual integration tests
+    }
+
+    @Getter
+    @Setter
+    public static class TestDrink {
+
+        private String ref;
+        private String name;
+        private String description;
+        private Long price;
+        private Long preparationTime;
+
+    }
 
 }

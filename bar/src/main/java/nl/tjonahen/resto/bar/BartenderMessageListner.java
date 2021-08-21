@@ -17,15 +17,16 @@ import org.springframework.stereotype.Service;
 public class BartenderMessageListner {
 
     private final BartenderService bartenderService;
+    private final ObjectMapper objectMapper;
     
-    public BartenderMessageListner(BartenderService bartenderService) {
+    public BartenderMessageListner(final BartenderService bartenderService, final ObjectMapper objectMapper) {
         this.bartenderService = bartenderService;
+        this.objectMapper = objectMapper;
     }
 
 
     @RabbitListener(queues = BartenderApplication.BARTENDER_QUEUE)
     public void receiveDrink(final Message message) throws IOException {
-        var objectMapper = new ObjectMapper();
         var drinks = objectMapper.readValue(message.getBody(), CouponMessage.class);
         log.info("Prepare drinks for order {}", drinks.getOrderid());
 

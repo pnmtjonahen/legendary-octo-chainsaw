@@ -24,12 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -42,7 +39,6 @@ import reactor.core.publisher.Mono;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:test.properties")
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 class DinerApplicationTests {
@@ -205,15 +201,9 @@ class DinerApplicationTests {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
-       
-        final RabbitListenerTestHarness.InvocationData invocationData = this.harness.getNextInvocationDataFor("testBroker", 10, TimeUnit.SECONDS);
-	      assertNotNull(invocationData);
-        final Message message = (Message)invocationData.getArguments()[0];
-        final String body = new String(message.getBody());
-        assertEquals("{\"id\":1,\"msg\":\"FOOD_SERVED\"}", body);
-        
-        Mockito.verify(orderStatusWebSocketHandler).sendStatus(any(), any());
+      
     }
+    
     @Test
     void serveDishes_ordernotfound() {
         this.webTestClient
@@ -221,7 +211,7 @@ class DinerApplicationTests {
                 .uri(String.format("http://localhost:%d/api/order/9/serve/dishes", port))
                 .exchange()
                 .expectStatus()
-                .is5xxServerError();
+                .is4xxClientError();
     }
 
     @Test
@@ -232,12 +222,6 @@ class DinerApplicationTests {
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
-        final RabbitListenerTestHarness.InvocationData invocationData =
-            this.harness.getNextInvocationDataFor("testBroker", 10, TimeUnit.SECONDS);
-        assertNotNull(invocationData);
-        final Message message = (Message)invocationData.getArguments()[0];
-        final String body = new String(message.getBody());
-        assertEquals("{\"id\":1,\"msg\":\"DRINKS_SERVED\"}", body);
     }
     
     @Test
@@ -247,6 +231,6 @@ class DinerApplicationTests {
                 .uri(String.format("http://localhost:%d/api/order/9/serve/drinks", port))
                 .exchange()
                 .expectStatus()
-                .is5xxServerError();
+                .is4xxClientError();
     }
 }

@@ -81,7 +81,7 @@ public class OrderService {
     }
 
     public List<Dish> defaultDishes(Exception t) {
-        log.error("getDishes failed with ", t);
+        log.error("getDishes failed with {}", t.getMessage());
         return new ArrayList<>();
     }
 
@@ -91,7 +91,7 @@ public class OrderService {
     }
 
     public Flux<Drink> defaultDrinks(Throwable t) {
-        log.error("getDrinks failed with ", t);
+        log.error("getDrinks failed with {}", t.getMessage());
         return Flux.fromIterable(Arrays.asList(new Drink(WATER, WATER, "complementary water", 0L)));
     }
 
