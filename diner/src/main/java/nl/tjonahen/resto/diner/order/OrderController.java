@@ -10,7 +10,6 @@ import nl.tjonahen.resto.diner.order.model.OrderItem;
 import nl.tjonahen.resto.diner.order.model.OrderItemType;
 import nl.tjonahen.resto.diner.order.model.OrderStatus;
 import nl.tjonahen.resto.diner.order.service.OrderService;
-import nl.tjonahen.resto.diner.order.status.OrderNotFoundException;
 import nl.tjonahen.resto.diner.order.status.OrderStatusBroker;
 import nl.tjonahen.resto.diner.persistence.OrderRepository;
 import org.springframework.http.HttpStatus;
@@ -23,17 +22,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/**
- *
- * @author Philippe Tjon - A - Hen
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
-    private static final String ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE = "Error while updateing orderstatus {}";
+    private static final String ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE = "Error while updateing orderstatus %s";
 
     private final OrderRepository orderRepository;
     private final OrderService orderService;
@@ -75,13 +71,8 @@ public class OrderController {
                 orderStatusBroker.sendStatusUpdate(id, order.serveDrinks().name());
                 order.setStatus(OrderStatus.DRINK_SERVED);
                 orderRepository.save(order);
-            } catch (OrderNotFoundException ex) {
-                log.error("Table for Order {} not found, drinks cannot be served", id);
-                order.setStatus(OrderStatus.NO_CUSTOMER);
             } catch (IOException ex) {
-                log.error(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
-            } finally {
-                orderRepository.save(order);
+                throwInternalServerError(ex);
             }
         }, () -> {
             throw new OrderNotFoundErrorException();
@@ -95,17 +86,19 @@ public class OrderController {
                 log.info("Serving food for order {}", id);
                 orderStatusBroker.sendStatusUpdate(id, order.serveFood().name());
                 order.setStatus(OrderStatus.FOOD_SERVED);
-            } catch (OrderNotFoundException ex) {
-                log.error("Table for Order {} not found, food cannot be served", id);
-                order.setStatus(OrderStatus.NO_CUSTOMER);
-            } catch (IOException ex) {
-                log.error(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
-            } finally {
                 orderRepository.save(order);
+            } catch (IOException ex) {
+                throwInternalServerError(ex);
             }
         }, () -> {
             throw new OrderNotFoundErrorException();
         });
+    }
+
+    public void throwInternalServerError(IOException ex) throws HttpServerErrorException {
+        final String message = String.format(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
+        log.error(message);
+        throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }
 
     @PostMapping("/{orderid}/serve/{dishid}")
@@ -121,14 +114,10 @@ public class OrderController {
                     log.info("Serving food for order {}", orderid);
                     orderStatusBroker.sendStatusUpdate(orderid, order.serveFood().name());
                     order.setStatus(OrderStatus.FOOD_SERVED);
+                    orderRepository.save(order);
                 }
-            } catch (OrderNotFoundException ex) {
-                log.error("Table for Order {} not found, food cannot be served", orderid);
-                order.setStatus(OrderStatus.NO_CUSTOMER);
             } catch (IOException ex) {
-                log.error(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
-            } finally {
-                orderRepository.save(order);
+                throwInternalServerError(ex);
             }
         }, () -> { throw new OrderNotFoundErrorException(); });
     }
@@ -144,9 +133,9 @@ public class OrderController {
     @Transactional
     public ResponseEntity<ResponseOrder> placeOrder(@RequestBody
             final List<RequestedItem> orderItems,
-            UriComponentsBuilder builder) {
+            final UriComponentsBuilder builder) {
 
-        final var order = Order.builder()
+        final var order = orderRepository.save(Order.builder()
                 .status(OrderStatus.INITIAL)
                 .orderItems(orderItems.stream()
                         .map(item -> OrderItem.builder()
@@ -155,8 +144,8 @@ public class OrderController {
                         .orderItemType(item.getType() == RequestedItemType.DISH ? OrderItemType.DISH : OrderItemType.DRINK)
                         .build())
                         .collect(Collectors.toList()))
-                .build();
-        orderRepository.save(order);
+                .build());
+        
 
         orderService.processDishes(order.getId(), order.getOrderItems()
                 .stream()

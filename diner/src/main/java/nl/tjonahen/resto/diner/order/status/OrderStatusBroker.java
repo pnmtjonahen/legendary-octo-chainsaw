@@ -41,7 +41,7 @@ public class OrderStatusBroker {
         this.orderStatusWebSocketHandler = orderStatusWebSocketHandler;
     }
 
-    public void sendStatusUpdate(Long id, String msg) throws IOException, OrderNotFoundException {
+    public void sendStatusUpdate(Long id, String msg) throws IOException {
         rabbitTemplate.convertAndSend(DinerApplication.DINER_EXCHANGE, DinerApplication.DINER_KEY,
                 new OrderStatusMessage(id, msg));
 
