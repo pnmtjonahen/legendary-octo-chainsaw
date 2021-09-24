@@ -1,5 +1,6 @@
 package nl.tjonahen.resto.diner.menu;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import nl.tjonahen.resto.logging.Logged;
@@ -19,10 +20,12 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api/menu")
 public class MenuController {
 
+    private final MeterRegistry registry;
     private final OrderService orderService;
 
-    public MenuController(final OrderService orderService) {
+    public MenuController(final OrderService orderService, final MeterRegistry registry) {
         this.orderService = orderService;
+        this.registry = registry;
     }
 
     /*
@@ -34,6 +37,7 @@ public class MenuController {
     @Logged
     public Flux<MenuItem> getMenu() {
         log.info("Getting Menu");
+        registry.counter("diner.getmenu").increment();;
         return Flux.concat(
                 Flux.fromIterable(orderService.getDishes())
                         .map(d -> MenuItem.builder()
