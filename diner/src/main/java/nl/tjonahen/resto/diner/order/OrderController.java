@@ -96,7 +96,7 @@ public class OrderController {
     }
 
     public void throwInternalServerError(IOException ex) throws HttpServerErrorException {
-        final String message = String.format(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
+        final var message = String.format(ERROR_WHILE_UPDATEING_ORDERSTATUS_ERROR_MESSAGE, ex.getMessage());
         log.error(message);
         throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, message);
     }

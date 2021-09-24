@@ -1,5 +1,7 @@
 package nl.tjonahen.resto.diner.menu;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.ArrayList;
 import nl.tjonahen.resto.diner.order.service.OrderService;
 import org.junit.jupiter.api.Assertions;
@@ -16,12 +18,17 @@ class MenuControllerTest {
 
     @Mock
     private OrderService orderService;
-    
+    @Mock
+    private MeterRegistry registry;
+    @Mock
+    private Counter counter;
+
     @InjectMocks
     private MenuController menuController;
     
     @Test
     void testGetMenu() throws Exception {
+        when(registry.counter("diner.getmenu")).thenReturn(counter);
         when(orderService.getDishes()).thenReturn(new ArrayList<>());
         when(orderService.getDrinks()).thenReturn(Flux.fromIterable(new ArrayList<>()));
         
