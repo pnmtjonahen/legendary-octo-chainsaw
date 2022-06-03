@@ -33,7 +33,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderControllerTest {
+class OrderControllerTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -54,14 +54,14 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testGetBill() {
+    void testGetBill() {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.of(newOrder()));
         final ResponseEntity<Bill> result = sut.getBill(1L);
         assertNotNull(result);
     }
 
     @Test
-    public void testGetBill_orderNotFound() {
+    void testGetBill_orderNotFound() {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.empty());
         final ResponseEntity<Bill> result = sut.getBill(1L);
         assertNotNull(result);
@@ -77,7 +77,7 @@ public class OrderControllerTest {
 
 
     @Test
-    public void testServeDrinks() throws IOException {
+    void testServeDrinks() throws IOException {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.of(newOrder()));
         sut.serveDrinks(1L);
         verify(orderStatusBroker).sendStatusUpdate(1L, "DRINK_SERVED");
@@ -87,13 +87,13 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testServeDrinks_order_not_found() {
+    void testServeDrinks_order_not_found() {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.empty());
         assertThrows(OrderNotFoundErrorException.class, () -> sut.serveDrinks(1L));
     }
 
     @Test
-    public void testServeDrinks_error_sending_status_update() throws IOException {
+    void testServeDrinks_error_sending_status_update() throws IOException {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.of(newOrder()));
         doThrow(new IOException()).when(orderStatusBroker).sendStatusUpdate(1L, "DRINK_SERVED");
         
@@ -103,7 +103,7 @@ public class OrderControllerTest {
     }
     
     @Test
-    public void testServeDishes() throws IOException {
+    void testServeDishes() throws IOException {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.of(newOrder()));
         sut.serveDishes(1L);
         verify(orderStatusBroker).sendStatusUpdate(1L, "FOOD_SERVED");
@@ -114,13 +114,13 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testServeDishes_order_not_found() {
+    void testServeDishes_order_not_found() {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.empty());
         assertThrows(OrderNotFoundErrorException.class, () -> sut.serveDishes(1L));
     }
 
     @Test
-    public void testServeDishes_error_sending_status_update() throws IOException {
+    void testServeDishes_error_sending_status_update() throws IOException {
         when(orderRepository.getOrderById(1L)).thenReturn(Optional.of(newOrder()));
         doThrow(new IOException()).when(orderStatusBroker).sendStatusUpdate(1L, "FOOD_SERVED");
         
@@ -130,12 +130,12 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testPay() {
+    void testPay() {
         sut.pay(1L);
     }
 
     @Test
-    public void testPlaceOrder() {
+    void testPlaceOrder() {
         final UriComponentsBuilder builder = UriComponentsBuilder.newInstance();
         final List<RequestedItem> orderItems = new ArrayList<>();
         when(orderRepository.save(any())).thenReturn(newOrder());
