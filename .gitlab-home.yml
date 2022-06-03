@@ -1,4 +1,4 @@
-image: maven:3.8.1-openjdk-16
+image: maven:3.8.2-openjdk-17
  
 
 cache:
@@ -51,5 +51,5 @@ sonar:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/  
   script:
-    - mvn -Dsonar.java.source=16 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -B 
+    - mvn -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -B
 

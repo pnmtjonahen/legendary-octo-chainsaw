@@ -77,7 +77,10 @@ public class OrderService {
 
     @CircuitBreaker(name="getdishes", fallbackMethod = "defaultDishes")
     public List<Dish> getDishes() {
-        return restTemplate.exchange(chefUrl + "/api/menu", HttpMethod.GET, null, new ParameterizedTypeReference<List<Dish>>() {}).getBody();
+        return restTemplate.exchange(chefUrl + "/api/menu",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<List<Dish>>() {}).getBody();
     }
 
     public List<Dish> defaultDishes(Exception t) {

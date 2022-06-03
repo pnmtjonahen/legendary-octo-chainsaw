@@ -9,8 +9,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.target>16</maven.compiler.target>
-        <maven.compiler.source>16</maven.compiler.source>        
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
     </properties>
 
     <modules>
@@ -52,7 +52,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.7</version>
+                    <version>0.8.8</version>
                     <executions>
                         <execution>
                             <id>default-prepare-agent</id>
@@ -99,7 +99,7 @@
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
-            <url>https://repo.spring.io/libs-milestone</url>
+            <url>https://repo.spring.io/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
