@@ -37,7 +37,7 @@ public class MenuController {
     @Logged
     public Flux<MenuItem> getMenu() {
         log.info("Getting Menu");
-        registry.counter("diner.getmenu").increment();;
+        registry.counter("diner.getmenu").increment();
         return Flux.concat(
                 Flux.fromIterable(orderService.getDishes())
                         .map(d -> MenuItem.builder()

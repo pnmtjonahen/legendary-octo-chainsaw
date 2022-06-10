@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class TableControllerTest {
+class TableControllerTest {
 
     @Mock
     private TableRepository tableRepositoryMock;
@@ -22,7 +22,7 @@ public class TableControllerTest {
     
     
     @Test
-    public void testReserveTable() {
+    void testReserveTable() {
         final Table result = sut.reserveTable();
         
         assertNotNull(result);

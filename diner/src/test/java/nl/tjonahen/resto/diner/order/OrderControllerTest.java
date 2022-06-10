@@ -47,7 +47,7 @@ class OrderControllerTest {
     private ArgumentCaptor<Order> orderCaptor;
     
     @Test
-    public void testGetOrders() {
+    void testGetOrders() {
         when(orderRepository.findAll()).thenReturn(new ArrayList<>());
         final List<Order> result = sut.getOrders();
         assertNotNull(result);
