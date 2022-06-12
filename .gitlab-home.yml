@@ -41,7 +41,10 @@ test:
   artifacts:
     reports:
       junit:
-        - target/surefire-reports/TEST-*.xml
+        - bar/target/surefire-reports/TEST-*.xml
+        - diner/target/surefire-reports/TEST-*.xml
+        - kitchen/target/surefire-reports/TEST-*.xml
+        - front/target/surefire-reports/TEST-*.xml
 
 sonar:
   image: maven:3.6.3-adoptopenjdk-14

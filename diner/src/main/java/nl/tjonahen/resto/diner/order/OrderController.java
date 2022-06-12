@@ -2,7 +2,6 @@ package nl.tjonahen.resto.diner.order;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import nl.tjonahen.resto.diner.order.model.Order;
@@ -54,10 +53,10 @@ public class OrderController {
             final var billItems = order.get().getOrderItems()
                     .stream()
                     .map(item -> BillItem.builder().name(orderService.getName(item)).quantity(item.getQuantity()).price(orderService.getPrice(item)).build())
-                    .collect(Collectors.toList());
+                    .toList();
             return ResponseEntity.ok(Bill.builder().items(billItems).total(billItems.stream()
                     .map(BillItem::getTotal)
-                    .reduce(0L, (a, b) -> a + b))
+                    .reduce(0L, Long::sum))
                     .build());
         }
         return ResponseEntity.notFound().build();
@@ -109,8 +108,8 @@ public class OrderController {
                         .stream()
                         .filter(item -> item.getOrderItemType() == OrderItemType.DISH && item.getId().equals(dishid)).forEach(item -> item.setPrepared(true));
                 if (order.getOrderItems()
-                        .stream()
-                        .filter(item -> item.getOrderItemType() == OrderItemType.DISH && !item.isPrepared()).count() == 0) {
+                    .stream().noneMatch(item -> item.getOrderItemType() == OrderItemType.DISH
+                        && !item.isPrepared())) {
                     log.info("Serving food for order {}", orderid);
                     orderStatusBroker.sendStatusUpdate(orderid, order.serveFood().name());
                     order.setStatus(OrderStatus.FOOD_SERVED);
@@ -143,19 +142,19 @@ public class OrderController {
                         .quantity(item.getQuantity())
                         .orderItemType(item.getType() == RequestedItemType.DISH ? OrderItemType.DISH : OrderItemType.DRINK)
                         .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build());
         
 
         orderService.processDishes(order.getId(), order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DISH)
-                .collect(Collectors.toList()));
+                .toList());
 
         orderService.processDrinks(order.getId(), order.getOrderItems()
                 .stream()
                 .filter(item -> item.getOrderItemType() == OrderItemType.DRINK)
-                .collect(Collectors.toList()));
+                .toList());
 
         log.info("Accepted order {}", order.getId());
         final var uriComponents = builder.path("/api/order/{id}/bill").buildAndExpand(order.getId());
