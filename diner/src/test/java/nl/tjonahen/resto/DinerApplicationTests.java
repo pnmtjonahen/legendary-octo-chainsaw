@@ -31,6 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -41,6 +42,7 @@ import reactor.core.publisher.Mono;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:test.properties")
 @ContextConfiguration(initializers = {WireMockInitializer.class})
+@ActiveProfiles(profiles = "non-async")
 class DinerApplicationTests {
 
     @Autowired
@@ -186,7 +188,8 @@ class DinerApplicationTests {
         
         final RabbitListenerTestHarness.InvocationData invocationData =
             this.harness.getNextInvocationDataFor("testDrinks", 10, TimeUnit.SECONDS);
-	assertNotNull(invocationData);  
+
+        assertNotNull(invocationData);
         final Message message = (Message)invocationData.getArguments()[0];
         final String body = new String(message.getBody());
         assertEquals("{\"orderid\":2,\"items\":[{\"id\":null,\"ref\":\"cola\",\"quantity\":1}]}", body);

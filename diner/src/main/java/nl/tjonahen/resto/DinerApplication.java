@@ -35,7 +35,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableRabbit
 @EnableWebSocket
 @EnableDiscoveryClient
-@EnableAsync
 @EnableSwagger2
 public class DinerApplication implements RabbitListenerConfigurer {
 
