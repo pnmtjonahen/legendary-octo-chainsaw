@@ -1,4 +1,4 @@
-image: maven:3.8.2-openjdk-17
+image: maven:3.8.2-openjdk-18
  
 
 cache:
@@ -27,7 +27,8 @@ build:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
-  script: "mvn clean compile -B"
+  script:
+    - mvn clean compile -B
 
 test:
   stage: test
@@ -37,7 +38,8 @@ test:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
-  script: "mvn -Dspring.profiles.active=gitlab verify -B"
+  script:
+    - mvn -Dspring.profiles.active=gitlab verify -B
   artifacts:
     reports:
       junit:
@@ -47,12 +49,12 @@ test:
         - front/target/surefire-reports/TEST-*.xml
 
 sonar:
-  image: maven:3.6.3-adoptopenjdk-14
+  image: maven:3.8.2-openjdk-17
   stage: qa
   only:
     variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/  
   script:
-    - mvn -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar -B
+    - mvn -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
 
