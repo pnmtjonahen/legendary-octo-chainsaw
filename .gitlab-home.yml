@@ -49,7 +49,7 @@ test:
         - front/target/surefire-reports/TEST-*.xml
 
 sonar:
-  image: maven:3.8.5-openjdk-17
+  image: maven:3.8.5-eclipse-temurin-17-alpine
   stage: qa
   only:
     variables:
