@@ -33,7 +33,7 @@ build:
 test:
   stage: test
   services:
-    - rabbitmq:latest
+    - rabbitmq:3.10.5-alpine
   only:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
