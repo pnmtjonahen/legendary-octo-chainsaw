@@ -27,7 +27,7 @@ build:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn clean compile -B
+    - mvn compile -B
 
 test:
   stage: test

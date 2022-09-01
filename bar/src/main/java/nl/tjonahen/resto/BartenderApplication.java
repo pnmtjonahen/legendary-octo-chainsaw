@@ -30,7 +30,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableRabbit
 @EnableDiscoveryClient
 @EnableRetry
-@EnableSwagger2
 public class BartenderApplication implements RabbitListenerConfigurer {
 
     public static final String BARTENDER_QUEUE = "bartender-queue";

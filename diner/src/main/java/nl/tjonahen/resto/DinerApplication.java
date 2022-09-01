@@ -35,7 +35,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableRabbit
 @EnableWebSocket
 @EnableDiscoveryClient
-@EnableSwagger2
 public class DinerApplication implements RabbitListenerConfigurer {
 
     public static final String BARTENDER_QUEUE = "bartender-queue";

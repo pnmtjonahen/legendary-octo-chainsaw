@@ -21,7 +21,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableAsync
-@EnableSwagger2
 public class ChefApplication {
 
     public static void main(String[] args) {
