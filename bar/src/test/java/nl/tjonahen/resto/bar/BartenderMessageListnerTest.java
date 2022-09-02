@@ -23,7 +23,7 @@ class BartenderMessageListnerTest {
     
     @Test
     void testReceiveDrink() throws Exception {
-        final Message message = new Message("".getBytes(), null);
+        final Message message = new Message("".getBytes());
         final CouponMessage couponMessage = new CouponMessage();
         couponMessage.setOrderid(1L);
         final Coupon[] items = { newCoupon()};

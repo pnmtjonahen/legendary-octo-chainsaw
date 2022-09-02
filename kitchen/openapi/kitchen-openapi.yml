@@ -1,0 +1,92 @@
+openapi: 3.0.1
+info:
+  title: Diner REST API
+  description: Diner REST API.
+  termsOfService: n/a
+  contact:
+    name: J-Tech
+  license:
+    name: DBAD
+    url: https://dbad-license.org/
+  version: V1
+servers:
+- url: //localhost:8080/
+tags:
+- name: chef-controller
+  description: Chef Controller
+paths:
+  /api/menu:
+    get:
+      tags:
+      - chef-controller
+      summary: get the posible dishes, aka the food menu
+      operationId: menuUsingGET
+      responses:
+        200:
+          description: OK, get the current available food items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dish'
+        404:
+          description: If no food is available
+          content: {}
+      deprecated: false
+  /api/order:
+    post:
+      tags:
+      - chef-controller
+      summary: order food to be prepared
+      operationId: orderUsingPOST
+      requestBody:
+        description: The ticket order, contains the food tickets for a specific order.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketOrder'
+        required: true
+      responses:
+        202:
+          description: Accepted
+          content: {}
+      deprecated: false
+      x-codegen-request-body-name: ticketOrder
+components:
+  schemas:
+    TicketOrderItem:
+      title: A singe ticket item
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int64
+        name:
+          type: string
+    TicketOrder:
+      title: Ticket order, contains the dishes to be prepared (Tickets) and a reference
+        to the order
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketOrderItem'
+        orderid:
+          type: integer
+          format: int64
+    Dish:
+      title: A dish that is currently available
+      type: object
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        preparationTime:
+          type: integer
+          format: int64
+        price:
+          type: integer
+          format: int64

@@ -219,7 +219,30 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>            
+            </plugin>
+            <plugin>
+                <groupId>com.ethlo.zally</groupId>
+                <artifactId>zally-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <configuration>
+                    <source>${project.basedir}/openapi/diner-openapi.yml</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>report</goal>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.zalando</groupId>
+                        <artifactId>zally-ruleset-zalando</artifactId>
+                        <version>2.1.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
       
