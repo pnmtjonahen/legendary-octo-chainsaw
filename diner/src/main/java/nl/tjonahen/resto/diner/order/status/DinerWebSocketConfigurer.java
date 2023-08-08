@@ -9,20 +9,22 @@ import org.springframework.web.socket.handler.ExceptionWebSocketHandlerDecorator
 @Configuration
 public class DinerWebSocketConfigurer implements WebSocketConfigurer {
 
-    private OrderStatusWebSocketHandler orderStatusWebSocketHandler;
+  private OrderStatusWebSocketHandler orderStatusWebSocketHandler;
 
-    @Autowired
-    public void setOrderStatusBroker(OrderStatusWebSocketHandler orderStatusWebSocketHandler) {
-        this.orderStatusWebSocketHandler = orderStatusWebSocketHandler;
-    }
+  @Autowired
+  public void setOrderStatusBroker(OrderStatusWebSocketHandler orderStatusWebSocketHandler) {
+    this.orderStatusWebSocketHandler = orderStatusWebSocketHandler;
+  }
 
-    /*
-     * Register our OrderStatusBroker as the websocket handler, wrapped in a excption decorator handler. 
-     * Set allow origins to * to enable other domains to connect to our websocket. 
-     */
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ExceptionWebSocketHandlerDecorator(orderStatusWebSocketHandler), "/orderstatus").setAllowedOrigins("*");
-    }
-
+  /*
+   * Register our OrderStatusBroker as the websocket handler, wrapped in a excption decorator handler.
+   * Set allow origins to * to enable other domains to connect to our websocket.
+   */
+  @Override
+  public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+    registry
+        .addHandler(
+            new ExceptionWebSocketHandlerDecorator(orderStatusWebSocketHandler), "/orderstatus")
+        .setAllowedOrigins("*");
+  }
 }

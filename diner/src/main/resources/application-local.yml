@@ -1,0 +1,6 @@
+server:
+    port: 8083
+chef:
+    url: http://localhost:8082/
+bartender:
+    url: http://localhost:8081/

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 /**
- *
  * @author Philippe Tjon - A - Hen
  */
 @Slf4j
@@ -20,42 +19,45 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api/menu")
 public class MenuController {
 
-    private final MeterRegistry registry;
-    private final OrderService orderService;
+  private final MeterRegistry registry;
+  private final OrderService orderService;
 
-    public MenuController(final OrderService orderService, final MeterRegistry registry) {
-        this.orderService = orderService;
-        this.registry = registry;
-    }
+  public MenuController(final OrderService orderService, final MeterRegistry registry) {
+    this.orderService = orderService;
+    this.registry = registry;
+  }
 
-    /*
-     * Menu resource, frontdesk uses this rest service to get the menu.
-    * @CrossOrigin as the frontdesk has a different domain then this service
-     */
-    @CrossOrigin
-    @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @Logged
-    public Flux<MenuItem> getMenu() {
-        log.info("Getting Menu");
-        registry.counter("diner.getmenu").increment();
-        return Flux.concat(
-                Flux.fromIterable(orderService.getDishes())
-                        .map(d -> MenuItem.builder()
+  /*
+   * Menu resource, frontdesk uses this rest service to get the menu.
+   * @CrossOrigin as the frontdesk has a different domain then this service
+   */
+  @CrossOrigin
+  @GetMapping(produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  @Logged
+  public Flux<MenuItem> getMenu() {
+    log.info("Getting Menu");
+    registry.counter("diner.getmenu").increment();
+    return Flux.concat(
+        Flux.fromIterable(orderService.getDishes())
+            .map(
+                d ->
+                    MenuItem.builder()
                         .ref(d.getRef())
                         .name(d.getName())
                         .description(d.getDescription())
                         .price(d.getPrice())
                         .type(MenuItem.Type.DISH)
                         .build()),
-                orderService.getDrinks()
-                        .map(d -> MenuItem.builder()
+        orderService
+            .getDrinks()
+            .map(
+                d ->
+                    MenuItem.builder()
                         .ref(d.getRef())
                         .name(d.getName())
                         .description(d.getDescription())
                         .price(d.getPrice())
                         .type(MenuItem.Type.DRINK)
                         .build()));
-
-    }
-
+  }
 }

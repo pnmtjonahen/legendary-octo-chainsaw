@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/table")
 public class TableController {
 
-    private final TableRepository tableRepository;
+  private final TableRepository tableRepository;
 
-    public TableController(TableRepository tableRepository) {
-        this.tableRepository = tableRepository;
-    }
+  public TableController(TableRepository tableRepository) {
+    this.tableRepository = tableRepository;
+  }
 
-    @CrossOrigin
-    @GetMapping("/reserve")
-    public Table reserveTable() {
-        final var table = Table.builder().build();
-        tableRepository.save(table);
-        return table;
-    }
+  @CrossOrigin
+  @GetMapping("/reserve")
+  public Table reserveTable() {
+    final var table = Table.builder().build();
+    tableRepository.save(table);
+    return table;
+  }
 }

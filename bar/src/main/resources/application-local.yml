@@ -1,0 +1,4 @@
+server:
+    port: 8081
+diner:
+    url: http://localhost:8083
