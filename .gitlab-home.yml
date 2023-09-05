@@ -1,4 +1,4 @@
-image: maven:3.8.5-eclipse-temurin-18-alpine
+image: maven:3.9.4-eclipse-temurin-17-alpine
 
 cache:
   key: "${CI_PROJECT_NAME}"
@@ -48,7 +48,6 @@ test:
         - front/target/surefire-reports/TEST-*.xml
 
 sonar:
-  image: maven:3.8.5-eclipse-temurin-17-alpine
   stage: qa
   only:
     variables:
