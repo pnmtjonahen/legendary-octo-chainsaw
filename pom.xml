@@ -14,6 +14,9 @@
         <maven.compiler.target>17</maven.compiler.target>
 
         <spring-boot.version>3.1.3</spring-boot.version>
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <spring-cloud-services.version>4.0.3</spring-cloud-services.version>
+        <com.github.tomakehurst.wiremock.version>3.0.0-beta-10</com.github.tomakehurst.wiremock.version>
     </properties>
 
     <modules>
@@ -33,7 +36,6 @@
         <profile>
             <id>local-build</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
                 <property>
                     <name>!gitlab-ci</name>
                 </property>
@@ -43,7 +45,7 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>8.3.1</version>
+                        <version>8.4.0</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -73,7 +75,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>3.3.0</version>
+                        <version>3.4.0</version>
                         <executions>
                             <execution>
                                 <id>enforce-maven</id>
@@ -94,6 +96,31 @@
             </build>
         </profile>
     </profiles>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.pivotal.spring.cloud</groupId>
+                <artifactId>spring-cloud-services-dependencies</artifactId>
+                <version>${spring-cloud-services.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
 
         <pluginManagement>
@@ -169,7 +196,17 @@
                 <configuration>
                     <skipTests>false</skipTests>
                 </configuration>
-            </plugin>                 
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <profiles>
+                        <profile>local</profile>
+                    </profiles>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

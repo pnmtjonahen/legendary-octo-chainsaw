@@ -9,10 +9,7 @@
     <artifactId>chef</artifactId>
     <packaging>jar</packaging>
     <description>Chef for Resto</description>
-    <properties>
-        <com.github.tomakehurst.wiremock.version>3.0.0-beta-10</com.github.tomakehurst.wiremock.version>
-    </properties>
-    
+
      <profiles>
         <profile>
             <id>gitlab-ci</id>
@@ -21,18 +18,7 @@
             </properties>
         </profile>
     </profiles>    
-  
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>     
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,16 +52,6 @@
     <build>
         <finalName>chef</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
-                <configuration>
-                    <profiles>
-                        <profile>local</profile>
-                    </profiles>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>com.ethlo.zally</groupId>
                 <artifactId>zally-maven-plugin</artifactId>
