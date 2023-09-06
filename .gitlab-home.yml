@@ -27,18 +27,18 @@ build:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn compile -Dgitlab-ci -B
+    - mvn -Dgitlab-ci compile -B
 
 test:
   stage: test
   services:
-    - rabbitmq:3.10.5-alpine
+    - rabbitmq:3.12.4-alpine
   only:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn -Dspring.profiles.active=gitlab verify -Dgitlab-ci -B
+    - mvn -Dspring.profiles.active=gitlab -Dgitlab-ci verify -B
   artifacts:
     reports:
       junit:
