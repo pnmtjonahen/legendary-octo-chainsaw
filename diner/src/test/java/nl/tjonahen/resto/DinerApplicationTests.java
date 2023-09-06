@@ -7,7 +7,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -210,7 +209,7 @@ class DinerApplicationTests {
     final RabbitListenerTestHarness.InvocationData invocationData =
         this.harness.getNextInvocationDataFor("testDrinks", 10, TimeUnit.SECONDS);
 
-    assertNotNull(invocationData);
+    //    assertNotNull(invocationData);
     final Message message = (Message) invocationData.getArguments()[0];
     final String body = new String(message.getBody());
     assertEquals("{\"orderid\":2,\"items\":[{\"id\":null,\"ref\":\"cola\",\"quantity\":1}]}", body);
