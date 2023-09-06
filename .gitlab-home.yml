@@ -38,7 +38,7 @@ test:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn -Dspring.profiles.active=gitlab -Dgitlab-ci verify -B
+    - mvn -Dspring.profiles.active=gitlab,non-async -Dgitlab-ci verify -B
   artifacts:
     reports:
       junit:

@@ -42,7 +42,7 @@ import reactor.core.publisher.Mono;
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 // @ActiveProfiles(
 //    inheritProfiles = true,
-//    profiles = {"+non-async"})
+//    profiles = {"non-async"})
 class DinerApplicationTests {
 
   @Autowired private WireMockServer wireMockServer;
