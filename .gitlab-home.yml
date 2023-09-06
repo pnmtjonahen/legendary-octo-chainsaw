@@ -27,7 +27,7 @@ build:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn compile -B
+    - mvn compile -Dgitlab-ci -B
 
 test:
   stage: test
@@ -38,7 +38,7 @@ test:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn -Dspring.profiles.active=gitlab verify -B
+    - mvn -Dspring.profiles.active=gitlab verify -Dgitlab-ci -B
   artifacts:
     reports:
       junit:
@@ -54,5 +54,5 @@ sonar:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/  
   script:
-    - mvn -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
+    - mvn -Dgitlab-ci -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
 

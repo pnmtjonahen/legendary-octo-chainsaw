@@ -10,10 +10,6 @@
     <artifactId>bartender</artifactId>
     <packaging>jar</packaging>
     <description>Bartender for Resto</description>
-    <properties>
-        <java.version>17</java.version>
-        <spring-boot.version>3.1.2</spring-boot.version>
-    </properties>
     <profiles>
         <profile>
             <id>gitlab-ci</id>

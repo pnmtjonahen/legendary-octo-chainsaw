@@ -12,7 +12,6 @@
     <properties>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <spring-cloud-services.version>4.0.3</spring-cloud-services.version>
-        <spring-boot.version>3.1.2</spring-boot.version>
     </properties>
     <profiles>
         <profile>
