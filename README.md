@@ -26,9 +26,6 @@ The bartender microservice is responsible for mixing drinks.
 - WebSocket: frontdesk opens a websocket to get status updates on submitted order. Diner sends (pushes) status updates to the frontdesk via this websocket.
 - AMQP (rabbitmq): When submitting new drink order to the bartender AMQP is used.
 - @Async methods
-- Config server
-- Zipkin server / sleuth for tracing
-- Eureka Server / Eureka client / Ribbon @LoadBalanced RestTemplates
 - JPA repository for database access
 
 # Running
@@ -43,21 +40,18 @@ The bartender microservice is responsible for mixing drinks.
 
  goto the bar subfolder and run
 ```bash
-mvn spring-boot:run -Dserver.port=8081
+mvn spring-boot:run
 ```
 goto the kitchen subfolder and run
 ```bash
-mvn spring-boot:run -Dserver.port=8082
+mvn spring-boot:run
 ```
 goto the diner subfolder and run
 ```bash
-mvn spring-boot:run -Dserver.port=8083
+mvn spring-boot:run
 ```
 goto the front subfolder and run
 ```bash
 mvn spring-boot:run
 ```
 The frontend will be running on http://localhost:8080
-
-2. Deploy on PCF
-- cf create-service p-config-server trial myConfigServer -c '{"git": { "uri": "https://github.com/pnmtjonahen/config.git"} }'

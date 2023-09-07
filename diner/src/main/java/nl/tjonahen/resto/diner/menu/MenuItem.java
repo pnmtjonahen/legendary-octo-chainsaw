@@ -10,10 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItem {
-    public enum Type {DISH, DRINK}
-    private Type type;
-    private String ref;
-    private String name;
-    private String description;
-    private Long price;
+  public enum Type {
+    DISH,
+    DRINK
+  }
+
+  private Type type;
+  private String ref;
+  private String name;
+  private String description;
+  private Long price;
 }

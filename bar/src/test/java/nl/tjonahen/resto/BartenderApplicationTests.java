@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -20,43 +20,39 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {WireMockInitializer.class})
 class BartenderApplicationTests {
-    @Autowired
-    private WireMockServer wireMockServer;
+  @Autowired private WireMockServer wireMockServer;
 
-    @Autowired
-    private WebTestClient webTestClient;
-    
-    @LocalServerPort
-    private Integer port;
-    
+  @Autowired private WebTestClient webTestClient;
 
-    @AfterEach
-    void afterEach() {
-        this.wireMockServer.resetAll();
-    }
-    
-    @Test
-    void getMenu() {
-        this.webTestClient.get()
-                .uri(String.format("http://localhost:%d/api/menu", port))
-                .accept(MediaType.TEXT_EVENT_STREAM)
-                .exchange()
-                .expectStatus().is2xxSuccessful()
-                .expectBodyList(TestDrink.class)
-                .returnResult()
-                .getResponseBody();// for now a placeholder to have actual integration tests
-    }
+  @LocalServerPort private Integer port;
 
-    @Getter
-    @Setter
-    public static class TestDrink {
+  @AfterEach
+  void afterEach() {
+    this.wireMockServer.resetAll();
+  }
 
-        private String ref;
-        private String name;
-        private String description;
-        private Long price;
-        private Long preparationTime;
+  @Test
+  void getMenu() {
+    this.webTestClient
+        .get()
+        .uri(String.format("http://localhost:%d/api/menu", port))
+        .accept(MediaType.TEXT_EVENT_STREAM)
+        .exchange()
+        .expectStatus()
+        .is2xxSuccessful()
+        .expectBodyList(TestDrink.class)
+        .returnResult()
+        .getResponseBody(); // for now a placeholder to have actual integration tests
+  }
 
-    }
+  @Getter
+  @Setter
+  public static class TestDrink {
 
+    private String ref;
+    private String name;
+    private String description;
+    private Long price;
+    private Long preparationTime;
+  }
 }

@@ -10,11 +10,9 @@ info:
   license:
     name: DBAD
     url: https://dbad-license.org/
-  version: V1
-  x-audience: company-internal
-  x-api-id: fe011038-7a7c-40bb-a5c4-29c7533312b0
+  version: 1.0.0
 servers:
-- url: //localhost:8080/
+- url: http://localhost:8080/
 tags:
 - name: bartender-controller
   description: Bartender Controller

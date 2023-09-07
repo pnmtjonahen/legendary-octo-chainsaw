@@ -15,12 +15,7 @@
     <name>Front</name>
     <description>Front end services</description>
 
-    <properties>
-        <spring-cloud.version>2021.0.2</spring-cloud.version>
-        <spring-cloud-services.version>3.5.0</spring-cloud-services.version>
-        <spring-boot.version>2.7.1</spring-boot.version>
-    </properties>
-    
+
     <profiles>
         <profile>
             <id>gitlab-ci</id>
@@ -29,56 +24,17 @@
             </properties>
         </profile>
     </profiles> 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.pivotal.spring.cloud</groupId>
-                <artifactId>spring-cloud-services-dependencies</artifactId>
-                <version>${spring-cloud-services.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>   
+
 
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>           
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.pivotal.spring.cloud</groupId>
-            <artifactId>spring-cloud-services-starter-config-client</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -88,22 +44,6 @@
 
     <build>
         <finalName>front</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
-                <configuration>
-                    <profiles>
-                        <profile>local</profile>
-                    </profiles>
-                </configuration>                
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
 </project>

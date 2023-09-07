@@ -12,17 +12,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RabbitListenerTest(spy = false, capture = false)
 public class IntegrationTestConfig {
 
-    @Bean
-    @Primary
-    public RestTemplate restMockTemplate(final RestTemplateBuilder builder) {
-        return builder.build();
-    }
+  @Bean
+  @Primary
+  public RestTemplate restMockTemplate(final RestTemplateBuilder builder) {
+    return builder.build();
+  }
 
-    @Bean
-    @Primary
-    public WebClient.Builder loadBalancedWebClientMockBuilder() {
-        return WebClient.builder();
-    }
-
-
+  @Bean
+  @Primary
+  public WebClient.Builder loadBalancedWebClientMockBuilder() {
+    return WebClient.builder();
+  }
 }
