@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
  * @author Philippe Tjon - A - Hen
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,6 +13,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Coupon {
-    private String ref;
-    private Long quantity;
+  private String ref;
+  private Long quantity;
 }

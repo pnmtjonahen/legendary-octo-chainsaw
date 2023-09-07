@@ -1,14 +1,14 @@
-image: maven:3.8.5-eclipse-temurin-18-alpine
+image: maven:3.9.4-eclipse-temurin-17-alpine
 
 cache:
   key: "${CI_PROJECT_NAME}"
   paths:
     - .sonar/cache
     - .m2
-#    - bar/target
-#    - diner/target
-#    - front/target
-#    - kitchen/target
+    - bar/target
+    - diner/target
+    - front/target
+    - kitchen/target
 
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
@@ -27,18 +27,18 @@ build:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn compile -B
+    - mvn -Dgitlab-ci compile -B
 
 test:
   stage: test
   services:
-    - rabbitmq:3.10.5-alpine
+    - rabbitmq:3.12.4-alpine
   only:
       variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/    
   script:
-    - mvn -Dspring.profiles.active=gitlab verify -B
+    - mvn -Dspring.profiles.active=gitlab,non-async -Dgitlab-ci verify -B
   artifacts:
     reports:
       junit:
@@ -48,12 +48,11 @@ test:
         - front/target/surefire-reports/TEST-*.xml
 
 sonar:
-  image: maven:3.8.5-eclipse-temurin-17-alpine
   stage: qa
   only:
     variables:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/  
   script:
-    - mvn -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
+    - mvn -Dgitlab-ci -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
 

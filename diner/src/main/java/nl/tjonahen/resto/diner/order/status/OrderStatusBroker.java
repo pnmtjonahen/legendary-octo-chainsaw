@@ -14,48 +14,50 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 /**
- * OrderStatusBroker is a amqp message broker that publishes and subscribes to
- * status update messages
+ * OrderStatusBroker is a amqp message broker that publishes and subscribes to status update
+ * messages
  */
 @Slf4j
 @Service
 public class OrderStatusBroker {
 
-    /**
-     * The order status update message
-     */
-    @Getter
-    @Setter
-    @NoArgsConstructor 
-    @AllArgsConstructor
-    private static class OrderStatusMessage {
-        private Long id;
-        private String msg;
+  /** The order status update message */
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  private static class OrderStatusMessage {
+    private Long id;
+    private String msg;
+  }
+
+  private final RabbitTemplate rabbitTemplate;
+  private final OrderStatusWebSocketHandler orderStatusWebSocketHandler;
+
+  public OrderStatusBroker(
+      RabbitTemplate rabbitTemplate, OrderStatusWebSocketHandler orderStatusWebSocketHandler) {
+    this.rabbitTemplate = rabbitTemplate;
+    this.orderStatusWebSocketHandler = orderStatusWebSocketHandler;
+  }
+
+  public void sendStatusUpdate(Long id, String msg) throws IOException {
+    rabbitTemplate.convertAndSend(
+        DinerApplication.DINER_EXCHANGE,
+        DinerApplication.DINER_KEY,
+        new OrderStatusMessage(id, msg));
+  }
+
+  @RabbitListener(queues = DinerApplication.DINER_QUEUE)
+  public void receiveStatusUpdate(final Message message) throws IOException {
+    final var objectMapper = new ObjectMapper();
+    final var orderStatus = objectMapper.readValue(message.getBody(), OrderStatusMessage.class);
+    try {
+      orderStatusWebSocketHandler.sendStatus(orderStatus.getId(), orderStatus.getMsg());
+    } catch (OrderNotFoundException ex) {
+      log.info(
+          "Unable to update order status for order {} with message {}",
+          orderStatus.getId(),
+          orderStatus.getMsg());
     }
-    
-    private final RabbitTemplate rabbitTemplate;
-    private final OrderStatusWebSocketHandler orderStatusWebSocketHandler;
-
-    public OrderStatusBroker(RabbitTemplate rabbitTemplate, OrderStatusWebSocketHandler orderStatusWebSocketHandler) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.orderStatusWebSocketHandler = orderStatusWebSocketHandler;
-    }
-
-    public void sendStatusUpdate(Long id, String msg) throws IOException {
-        rabbitTemplate.convertAndSend(DinerApplication.DINER_EXCHANGE, DinerApplication.DINER_KEY,
-                new OrderStatusMessage(id, msg));
-
-    }
-
-    @RabbitListener(queues = DinerApplication.DINER_QUEUE)
-    public void receiveStatusUpdate(final Message message) throws IOException {
-        final var objectMapper = new ObjectMapper();
-        final var orderStatus = objectMapper.readValue(message.getBody(), OrderStatusMessage.class);
-        try {
-            orderStatusWebSocketHandler.sendStatus(orderStatus.getId(), orderStatus.getMsg());
-        } catch (OrderNotFoundException ex) {
-            log.info("Unable to update order status for order {} with message {}", orderStatus.getId(), orderStatus.getMsg());
-        }
-    }
-
+  }
 }

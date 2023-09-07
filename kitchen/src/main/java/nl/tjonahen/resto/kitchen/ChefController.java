@@ -12,34 +12,35 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- *
  * @author Philippe Tjon - A - Hen
  */
 @RestController
 @RequestMapping("/api")
 public class ChefController {
 
-    private final ChefService chefService;
+  private final ChefService chefService;
 
-    public ChefController(ChefService chefService) {
-        this.chefService = chefService;
-    }
+  public ChefController(ChefService chefService) {
+    this.chefService = chefService;
+  }
 
-    @GetMapping("/menu")
-    @JsonView(PublicView.class)
-    public List<Dish> menu() {
-        return chefService.getAllDishes();
-    }
+  @GetMapping("/menu")
+  @JsonView(PublicView.class)
+  public List<Dish> menu() {
+    return chefService.getAllDishes();
+  }
 
-    @GetMapping("/dish/{ref}")
-    public Dish dish(@PathVariable String ref) {
-        return chefService.getAllDishes().stream().filter(d -> d.getRef().equals(ref)).findFirst().orElse(Dish.builder().build());
-    }
+  @GetMapping("/dish/{ref}")
+  public Dish dish(@PathVariable String ref) {
+    return chefService.getAllDishes().stream()
+        .filter(d -> d.getRef().equals(ref))
+        .findFirst()
+        .orElse(Dish.builder().build());
+  }
 
-    @PostMapping("/order")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void order(@RequestBody CouponMessage couponMessage) {
-        chefService.processCoupon(couponMessage);
-    }
-
+  @PostMapping("/order")
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  public void order(@RequestBody CouponMessage couponMessage) {
+    chefService.processCoupon(couponMessage);
+  }
 }

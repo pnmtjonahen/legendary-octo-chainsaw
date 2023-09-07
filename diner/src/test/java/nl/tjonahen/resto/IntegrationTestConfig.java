@@ -14,25 +14,25 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RabbitListenerTest(spy = true, capture = true)
 public class IntegrationTestConfig {
 
-    @Bean
-    @Primary
-    public RestTemplate restMockTemplate(final RestTemplateBuilder builder) {
-        return builder.build();
-    }
+  @Bean
+  @Primary
+  public RestTemplate restMockTemplate(final RestTemplateBuilder builder) {
+    return builder.build();
+  }
 
-    @Bean
-    @Primary
-    public WebClient.Builder loadBalancedWebClientMockBuilder() {
-        return WebClient.builder();
-    }
-    
-    @RabbitListener(id = "testDrinks", queues = DinerApplication.BARTENDER_QUEUE)
-    public void receiveDrinks(final Message message) {
-            System.out.println(message.toString());
-    }
+  @Bean
+  @Primary
+  public WebClient.Builder loadBalancedWebClientMockBuilder() {
+    return WebClient.builder();
+  }
 
-    @RabbitListener(id = "testBroker", queues = DinerApplication.DINER_QUEUE)
-    public void orderBroker(final Message message) {
-            System.out.println(message.toString());
-    }
+  @RabbitListener(id = "testDrinks", queues = DinerApplication.BARTENDER_QUEUE)
+  public void receiveDrinks(final Message message) {
+    System.out.println(message.toString());
+  }
+
+  @RabbitListener(id = "testBroker", queues = DinerApplication.DINER_QUEUE)
+  public void orderBroker(final Message message) {
+    System.out.println(message.toString());
+  }
 }

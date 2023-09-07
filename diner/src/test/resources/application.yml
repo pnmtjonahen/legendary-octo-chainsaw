@@ -1,0 +1,12 @@
+chef:
+    url: http://localhost:19888/chef
+bartender:
+    url: http://localhost:19888/bartender
+
+spring:
+    jpa:
+        show-sql: true
+        generate-ddl: true
+        hibernate:
+            ddl-auto: create
+        defer-datasource-initialization: true

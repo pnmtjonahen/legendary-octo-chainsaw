@@ -5,14 +5,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
  * @author Philippe Tjon - A - Hen
  */
 @Getter
 @Setter
 @NoArgsConstructor
 public class Coupon {
-    private Long id;
-    private String ref;
-    private Long quantity;
+  private Long id;
+  private String ref;
+  private Long quantity;
 }
