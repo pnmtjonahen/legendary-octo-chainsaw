@@ -54,5 +54,5 @@ sonar:
           # Run only when commit message doesn't start with "DinerRelease"
         - $CI_COMMIT_MESSAGE !~ /^DinerRelease.*/  
   script:
-    - mvn -Dgitlab-ci -Dsonar.java.source=17 -Dsonar.sources=bar,diner,kitchen org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
+    - mvn -Dgitlab-ci -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
 
