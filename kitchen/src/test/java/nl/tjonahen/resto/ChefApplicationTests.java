@@ -14,16 +14,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ChefApplicationTests {
-
-  //  @Rule public WireMockRule rule = new WireMockRule(19999);
+class ChefApplicationTests {
 
   @LocalServerPort private int port;
 
   @Autowired private TestRestTemplate restTemplate;
 
   @Test
-  public void testGetMenu() throws Exception {
+  void testGetMenu() throws Exception {
     String result =
         this.restTemplate.getForObject("http://localhost:" + port + "/api/menu", String.class);
     Assertions.assertNotNull(result);
@@ -31,7 +29,7 @@ public class ChefApplicationTests {
   }
 
   @Test
-  public void testGetDish() throws Exception {
+  void testGetDish() throws Exception {
     String result =
         this.restTemplate.getForObject("http://localhost:" + port + "/api/dish/1", String.class);
     Assertions.assertNotNull(result);
@@ -39,7 +37,7 @@ public class ChefApplicationTests {
   }
 
   @Test
-  public void testProcessCoupon() throws Exception {
+  void testProcessCoupon() throws Exception {
     final CouponMessage couponMessage = new CouponMessage();
     couponMessage.setOrderid(1L);
     final Coupon coupon = new Coupon();
