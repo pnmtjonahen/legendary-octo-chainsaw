@@ -12,8 +12,6 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
@@ -24,7 +22,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 @SpringBootApplication
 @EnableRabbit
 @EnableWebSocket
-@EnableDiscoveryClient
 public class DinerApplication implements RabbitListenerConfigurer {
 
   public static final String BARTENDER_QUEUE = "bartender-queue";
@@ -44,13 +41,11 @@ public class DinerApplication implements RabbitListenerConfigurer {
    *
    */
   @Bean
-  @LoadBalanced
   public RestTemplate restTemplate() {
     return new RestTemplate();
   }
 
   @Bean
-  @LoadBalanced
   public WebClient.Builder loadBalancedWebClientBuilder() {
     return WebClient.builder();
   }

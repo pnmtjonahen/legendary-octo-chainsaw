@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
@@ -24,7 +23,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,9 +37,6 @@ import reactor.core.publisher.Mono;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(initializers = {WireMockInitializer.class})
-// @ActiveProfiles(
-//    inheritProfiles = true,
-//    profiles = {"non-async"})
 class DinerApplicationTests {
 
   @Autowired private WireMockServer wireMockServer;
@@ -210,9 +205,10 @@ class DinerApplicationTests {
         this.harness.getNextInvocationDataFor("testDrinks", 10, TimeUnit.SECONDS);
 
     //    assertNotNull(invocationData);
-//    final Message message = (Message) invocationData.getArguments()[0];
-//    final String body = new String(message.getBody());
-//    assertEquals("{\"orderid\":2,\"items\":[{\"id\":null,\"ref\":\"cola\",\"quantity\":1}]}", body);
+    //    final Message message = (Message) invocationData.getArguments()[0];
+    //    final String body = new String(message.getBody());
+    //    assertEquals("{\"orderid\":2,\"items\":[{\"id\":null,\"ref\":\"cola\",\"quantity\":1}]}",
+    // body);
   }
 
   @Test
