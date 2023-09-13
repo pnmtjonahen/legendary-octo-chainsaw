@@ -17,6 +17,35 @@
                 <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
             </properties>
         </profile>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>tjonahen/${project.artifactId}</name>
+                                    <build>
+                                        <dockerFile>Dockerfile</dockerFile>
+                                        <tags>
+                                            <tag>latest</tag>
+                                            <tag>${project.version}</tag>
+                                        </tags>
+                                        <assembly>
+                                            <descriptor>assembly.xml</descriptor>
+                                        </assembly>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>    
     <dependencies>
         <dependency>

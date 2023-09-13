@@ -158,6 +158,11 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>0.43.4</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>

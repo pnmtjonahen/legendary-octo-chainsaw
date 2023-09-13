@@ -19,6 +19,7 @@ stages:
   - build
   - test
   - qa
+  - docker
 
 build:
   stage: build
@@ -56,3 +57,8 @@ sonar:
   script:
     - mvn -Dgitlab-ci -Dsonar.java.source=17 org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -B
 
+docker:
+  stage: docker
+  script:
+    - mvn docker:build -Pdocker -Dmaven.test.skip=true
+    - mvn docker:push -Pdocker -Ddocker.registry=registry.tjonahen.home:5000
